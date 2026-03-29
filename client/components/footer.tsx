@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-white border-t-2 border-black text-black">
+    <footer className="w-full bg-black border-t-2 border-white text-white">
       <div className=" mx-auto px-4 py-8 flex flex-col sm:flex-row justify-between items-center gap-6 text-sm">
         <div className="flex items-center gap-2 sm:gap-4">
           <Link href="/">
@@ -13,41 +13,41 @@ export default function Footer() {
                 alt="Kineq logo"
                 width={32}
                 height={32}
-                className="h-8 w-8 rounded-full bg-white border-2 border-black"
+                className="h-8 w-8 rounded-full bg-white border-2 border-white"
               />
-              <span className="text-black font-extrabold text-lg font-sans">
+              <span className="text-white font-extrabold text-lg font-sans">
                 Kineq
               </span>
             </div>
           </Link>
-          <span className="text-xs text-neutral-400 sm:ml-4">
+          <span className="text-xs text-gray-400 sm:ml-4">
             © {new Date().getFullYear()} Snigdha Datta
           </span>
         </div>
         <div className="flex gap-4 flex-wrap justify-center text-sm">
-          <a href="/about" className="hover:underline text-black font-semibold">
+          <a href="/about" className="hover:underline text-white font-semibold">
             About
           </a>
           <a
             href="/feedback"
-            className="hover:underline text-black font-semibold"
+            className="hover:underline text-white font-semibold"
           >
             Feedback
           </a>
           <a
             href="/privacy"
-            className="hover:underline text-black font-semibold"
+            className="hover:underline text-white font-semibold"
           >
             Privacy
           </a>
-          <a href="/terms" className="hover:underline text-black font-semibold">
+          <a href="/terms" className="hover:underline text-white font-semibold">
             Terms
           </a>
         </div>
         <div className="text-center sm:text-right">
           <a
             href="mailto:hello@kineq.app"
-            className="text-black hover:underline text-sm font-semibold"
+            className="text-white hover:underline text-sm font-semibold"
           >
             Contact
           </a>
