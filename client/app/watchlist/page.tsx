@@ -1,14 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import {
-  Plus,
-  Search,
-  MoreVertical,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
+import { Plus, Search } from "lucide-react";
+import { WatchlistItem } from "./item";
 import tokenSet from "@/lib/tokenset";
 
 export default function WatchlistPage() {
@@ -18,13 +12,9 @@ export default function WatchlistPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const router = useRouter();
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editValue, setEditValue] = useState("");
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-  async function fetchWatchlist() {
+  const fetchWatchlist = useCallback(async () => {
     setLoading(true);
     setError("");
     const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
@@ -35,107 +25,31 @@ export default function WatchlistPage() {
         credentials: "include",
         headers: { Authorization: accessToken || "" },
       });
+      const newAccessToken = res.headers?.get("Authorization");
+      if (newAccessToken && newAccessToken !== accessToken)tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
           router.push("/login");
           return;
-        }
-        const newAccessToken = res.headers?.get("Authorization");
-        if (newAccessToken) tokenSet(newAccessToken); // Update token in localStorage if a new one is provided
+        }        
         setError(data.error || "Failed to fetch watchlist items");
-        setMessage("");
         return;
       }
       setWatchlist(data || []);
+      setError("");
     } catch (err: unknown) {
-      setError((err as Error).message);
+      const msg = (err as Error).message;
+      setError(msg);
     } finally {
       setLoading(false);
     }
-  }
+  }, [router]);
 
   useEffect(() => {
     fetchWatchlist();
-  }, []);
+  }, [fetchWatchlist]);
 
-  // PATCH request to update a watchlist item by _id
-  async function handleEdit(id: string, name: string) {
-    setError("");
-    setMessage("");
-    const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
-    const accessToken = appData.accesstoken;
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/watchlist/${id}`,
-        {
-          method: "PATCH",
-          credentials: "include", //
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: accessToken || "",
-          },
-          body: JSON.stringify({ name }),
-        },
-      );
-      const data = await res.json();
-      if (!res.ok) {
-        if (data.error === "REFRESH_EXPIRED") {
-          router.push("/login");
-          return;
-        }
-        const newAccessToken = res.headers?.get("Authorization");
-        if (newAccessToken) tokenSet(newAccessToken); // Update token in localStorage if a new one is provided
-        setError(data.error || "Failed to update item");
-        setMessage("");
-        return;
-      }
-      setError("");
-      setMessage(data.message);
-      fetchWatchlist();
-    } catch (err: unknown) {
-      setError((err as Error).message);
-    }
-  }
-
-  // DELETE request to remove a watchlist item by _id
-  async function handleDelete(id: string) {
-    setError("");
-    setMessage("");
-    const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
-    const accessToken = appData.accesstoken;
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/watchlist/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-          headers: {
-            Authorization: accessToken || "",
-          },
-        },
-      );
-      const data = await res.json();
-      if (!res.ok) {
-        if (data.error === "REFRESH_EXPIRED") {
-          router.push("/login");
-          return;
-        }
-        const newAccessToken = res.headers?.get("Authorization");
-        if (newAccessToken) tokenSet(newAccessToken); // Update token in localStorage if a new one is provided
-        setError(data.error || "Failed to delete item");
-        setMessage("");
-        return;
-      }
-      setError("");
-      setMessage(data.message);
-      fetchWatchlist();
-    } catch (err: unknown) {
-      setError((err as Error).message);
-    }
-  }
-
-  // Filtered watchlist by search
   const filtered = watchlist.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase()),
   );
@@ -163,9 +77,6 @@ export default function WatchlistPage() {
       </div>
 
       {/* Feedback messages */}
-      {message && (
-        <div className="text-green-600 font-mono text-sm mb-2">{message}</div>
-      )}
       {error && (
         <div className="text-red-500 font-mono text-sm mb-2">{error}</div>
       )}
@@ -175,94 +86,12 @@ export default function WatchlistPage() {
         <div className="text-center text-gray-500 font-mono">Loading...</div>
       ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((item, idx) => (
-            <div
+          {filtered.map((item) => (
+            <WatchlistItem
               key={item._id}
-              className="border-2 border-black rounded-xl p-4 bg-white shadow flex flex-col gap-2 relative"
-            >
-              <div className="flex items-center justify-between">
-                {editingIndex === idx ? (
-                  <div className="flex flex-wrap items-center gap-2 w-full">
-                    <input
-                      type="text"
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      className="font-bold text-lg border-b-2 border-black outline-none px-1 bg-white flex-1"
-                      autoFocus
-                    />
-                    <button
-                      className="rounded-full p-1 bg-white flex items-center justify-center"
-                      onClick={() => {
-                        if (editValue.trim() && editValue !== item.name) {
-                          handleEdit(item._id, editValue);
-                        }
-                        setEditingIndex(null);
-                      }}
-                      aria-label="Save"
-                    >
-                      <CheckCircle2 className="w-6 h-6 text-green-500" />
-                    </button>
-                    <button
-                      className="rounded-full p-1 bg-white flex items-center justify-center"
-                      onClick={() => setEditingIndex(null)}
-                      aria-label="Cancel"
-                    >
-                      <XCircle className="w-6 h-6 text-gray-500" />
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <span className="font-bold text-lg">{item.name}</span>
-                    <div className="relative">
-                      <button
-                        className="ml-2 text-gray-500 hover:text-black"
-                        onClick={() =>
-                          setOpenMenuId((prev) =>
-                            prev === item._id ? null : item._id,
-                          )
-                        }
-                        aria-label="Options"
-                      >
-                        <MoreVertical className="w-5 h-5" />
-                      </button>
-                      {openMenuId === item._id && editingIndex !== idx && (
-                        <div className="absolute right-0 mt-1 w-24 bg-white border-2 border-black rounded-lg shadow z-20">
-                          <button
-                            className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
-                            onClick={() => {
-                              setEditingIndex(idx);
-                              setEditValue(item.name);
-                              setOpenMenuId(null);
-                            }}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-100"
-                            onClick={() => {
-                              handleDelete(item._id);
-                              setOpenMenuId(null);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-                {/* Removed extra Pencil icon */}
-              </div>
-              {item.coverImage && (
-                <Image
-                  width={400}
-                  height={300}
-                  src={item.coverImage}
-                  alt={item.name}
-                  className="w-full h-40 object-cover rounded-lg border"
-                />
-              )}
-            </div>
+              item={item}
+              onRefresh={fetchWatchlist}
+            />
           ))}
         </div>
       ) : (
