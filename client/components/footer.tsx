@@ -25,32 +25,38 @@ export default function Footer() {
           </span>
         </div>
         <div className="flex gap-4 flex-wrap justify-center text-sm">
-          <a href="/about" className="hover:underline text-white font-semibold">
+          <Link
+            href="/about"
+            className="hover:underline text-white font-semibold"
+          >
             About
-          </a>
-          <a
+          </Link>
+          <Link
             href="/feedback"
             className="hover:underline text-white font-semibold"
           >
             Feedback
-          </a>
-          <a
+          </Link>
+          <Link
             href="/privacy"
             className="hover:underline text-white font-semibold"
           >
             Privacy
-          </a>
-          <a href="/terms" className="hover:underline text-white font-semibold">
+          </Link>
+          <Link
+            href="/terms"
+            className="hover:underline text-white font-semibold"
+          >
             Terms
-          </a>
+          </Link>
         </div>
         <div className="text-center sm:text-right">
-          <a
+          <Link
             href="mailto:hello@kineq.app"
             className="text-white hover:underline text-sm font-semibold"
           >
             Contact
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
