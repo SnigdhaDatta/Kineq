@@ -8,11 +8,11 @@ export default function Header() {
         {/* Logo */}
         <div className="flex items-center gap-1 min-w-0 shrink">
           <Image
-            src="/totoro.svg"
+            src="https://img.icons8.com/doodle/48/film-reel--v1.png"
             alt="Kineq logo"
             width={36}
             height={36}
-            className="rounded-full bg-white border-2 border-black"
+            className="rounded-full bg-white"
             priority
           />
           <span className="text-black font-extrabold text-lg sm:text-2xl font-sans leading-none">
