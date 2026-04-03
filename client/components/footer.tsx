@@ -9,7 +9,7 @@ export default function Footer() {
           <Link href="/">
             <div className="flex items-center gap-2">
               <Image
-                src="/totoro.svg"
+                src="https://img.icons8.com/doodle/48/film-reel--v1.png"
                 alt="Kineq logo"
                 width={32}
                 height={32}
