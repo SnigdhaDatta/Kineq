@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { WatchlistItem } from "./item";
 import tokenSet from "@/lib/tokenset";
+import RouteProtector from "@/middleware/routematcher";
 
 export default function WatchlistPage() {
   const [watchlist, setWatchlist] = useState<
@@ -26,13 +27,14 @@ export default function WatchlistPage() {
         headers: { Authorization: accessToken || "" },
       });
       const newAccessToken = res.headers?.get("Authorization");
-      if (newAccessToken && newAccessToken !== accessToken)tokenSet(newAccessToken);
+      if (newAccessToken && newAccessToken !== accessToken)
+        tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
           router.push("/login");
           return;
-        }        
+        }
         setError(data.error || "Failed to fetch watchlist items");
         return;
       }
@@ -56,6 +58,7 @@ export default function WatchlistPage() {
 
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
+      <RouteProtector />
       {/* Add and Search Bar */}
       <div className="flex items-center gap-4 mb-8">
         <button
