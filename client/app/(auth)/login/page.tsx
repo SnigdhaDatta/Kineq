@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import PasswordInput from "@/components/password-input";
+import RouteProtector from "@/middleware/routematcher";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -54,6 +55,7 @@ export default function LoginPage() {
       onSubmit={handleLogin}
       className="relative z-10 w-full max-w-md mx-auto mt-16 p-8 border-2 border-black rounded-2xl bg-white shadow-[6px_6px_0px_#000] flex flex-col gap-5"
     >
+      <RouteProtector />
       {/* Header */}
       <div className="mb-2">
         <span className="inline-block font-mono text-xs tracking-[0.3em] uppercase bg-black text-white px-3 py-1 rounded-full mb-3">
