@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { OngoingItem } from "./item";
 import tokenSet from "@/lib/tokenset";
+import RouteProtector from "@/middleware/routematcher";
 
 export default function OngoingPage() {
   const [ongoing, setOngoing] = useState<
@@ -37,7 +38,8 @@ export default function OngoingPage() {
           return;
         }
         const newAccessToken = res.headers?.get("Authorization");
-        if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+        if (newAccessToken && newAccessToken !== accessToken)
+          tokenSet(newAccessToken);
         return;
       }
       setFolders(data || []);
@@ -58,7 +60,8 @@ export default function OngoingPage() {
         headers: { Authorization: accessToken || "" },
       });
       const newAccessToken = res.headers?.get("Authorization");
-      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+      if (newAccessToken && newAccessToken !== accessToken)
+        tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
@@ -87,6 +90,7 @@ export default function OngoingPage() {
 
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
+      <RouteProtector />
       {/* Add and Search Bar */}
       <div className="flex items-center gap-4 mb-8">
         <button
