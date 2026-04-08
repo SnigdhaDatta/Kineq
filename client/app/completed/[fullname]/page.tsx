@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
+import RouteProtector from "@/middleware/routematcher";
 
 interface Drama {
   _id: string;
@@ -177,6 +178,7 @@ export default function CompletedFolderPage() {
 
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
+      <RouteProtector />
       {/* Folder Name Heading */}
       <div className="mb-8 sticky top-0 z-10">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2 break-all">
