@@ -1,15 +1,33 @@
 "use client";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-export default function Dashboard() {
+const PUBLIC_ROUTES = new Set([
+  "/",
+  "/login",
+  "/signup",
+  "/about",
+  "/privacy",
+  "/terms",
+  "/feedback",
+]);
+
+export default function RouteProtector() {
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (!localStorage.getItem("accessToken")) {
-      router.replace("/signup");
+    if (PUBLIC_ROUTES.has(pathname)) {
+      return;
     }
-  }, [router]);
+
+    const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
+    const accessToken =
+      appData?.accesstoken || localStorage.getItem("accessToken");
+    if (!accessToken) {
+      router.replace("/login");
+    }
+  }, [router, pathname]);
 
   return null; // This component doesn't render anything
 }
