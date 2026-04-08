@@ -1,8 +1,10 @@
 import Link from "next/link";
+import RouteProtector from "@/middleware/routematcher";
 
 export default function AboutPage() {
   return (
     <div className="mx-auto w-full max-w-5xl py-16">
+      <RouteProtector />
       <div className="rounded-3xl border-2 border-black bg-white p-8 shadow-[8px_8px_0px_#000] md:p-12">
         <span className="inline-block rounded-full bg-black px-3 py-1 font-mono text-xs font-bold tracking-[0.3em] text-white uppercase">
           About Kineq
