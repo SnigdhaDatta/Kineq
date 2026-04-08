@@ -1,8 +1,10 @@
 import Link from "next/link";
+import RouteProtector from "@/middleware/routematcher";
 
 export default function FeedbackPage() {
   return (
     <div className="mx-auto w-full max-w-4xl py-16">
+      <RouteProtector />
       <span className="inline-block rounded-full bg-black px-3 py-1 font-mono text-xs font-bold tracking-[0.3em] text-white uppercase">
         Feedback
       </span>
