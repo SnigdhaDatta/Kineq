@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import RouteProtector from "@/middleware/routematcher";
 
 export default function AddCompletedFolderPage() {
   const [name, setName] = useState("");
@@ -49,6 +50,7 @@ export default function AddCompletedFolderPage() {
   }
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8 flex flex-col items-center">
+      <RouteProtector />
       <button
         className="flex items-center gap-2 text-black px-4 py-2 rounded-xl font-bold border-2 border-black shadow hover:bg-gray-100 transition-all mb-8"
         onClick={() => router.back()}
