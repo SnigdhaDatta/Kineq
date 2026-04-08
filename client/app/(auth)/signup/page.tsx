@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserPlus } from "lucide-react";
 import PasswordInput from "@/components/password-input";
+import RouteProtector from "@/middleware/routematcher";
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -16,7 +17,6 @@ export default function SignupPage() {
   const hasLowercase = /[a-z]/.test(password);
   const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const hasTypedEmail = email.trim().length > 0;
   const isFullNameValid = fullName.trim().length > 0;
   const isPasswordValid =
     hasMinLength && hasUppercase && hasLowercase && hasSpecialChar;
@@ -30,7 +30,7 @@ export default function SignupPage() {
     return hasMinLength && hasUppercase && hasLowercase && hasSpecialChar;
   }
 
-  async function handleSignup(e: React.FormEvent) {
+  async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
 
@@ -65,6 +65,7 @@ export default function SignupPage() {
       onSubmit={handleSignup}
       className="relative z-10 w-full max-w-md mx-auto mt-16 p-8 border-2 border-black rounded-2xl bg-white shadow-[6px_6px_0px_#000] flex flex-col gap-5"
     >
+      <RouteProtector />
       {/* Header */}
       <div className="mb-2">
         <span className="inline-block font-mono text-xs tracking-[0.3em] uppercase bg-black text-white px-3 py-1 rounded-full mb-3">
@@ -105,21 +106,23 @@ export default function SignupPage() {
         <label className="text-xs font-mono font-bold tracking-widest uppercase text-gray-500">
           Email
         </label>
-        <div className="relative">
-          <input
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 pr-32 py-3 border-2 border-black rounded-xl bg-white font-mono text-sm text-black placeholder-gray-300 focus:outline-none focus:shadow-[3px_3px_0px_#000] transition-shadow duration-150"
-          />
-          <span
-            className={`absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-xs rounded-full border font-mono transition-all duration-200 ${hasTypedEmail ? (isEmailValid ? "border-green-600 bg-green-50 text-green-700" : "border-red-500 bg-red-50 text-red-700") : "border-gray-300 bg-white text-gray-600"}`}
-          >
-            {hasTypedEmail ? (isEmailValid ? "✓" : "○") : "○"}
-          </span>
-        </div>
+        <input
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full px-4 py-3 border-2 border-black rounded-xl bg-white font-mono text-sm text-black placeholder-gray-300 focus:outline-none focus:shadow-[3px_3px_0px_#000] transition-shadow duration-150"
+        />
+
+        {/*
+        OTP verification UI removed for now:
+        - Verify button beside email
+        - OTP input field
+        - OTP submit button
+        - verification message
+        - email verified status
+        */}
       </div>
 
       {/* Password */}
@@ -168,7 +171,7 @@ export default function SignupPage() {
       <button
         type="submit"
         disabled={!canSubmit}
-        className="mt-1 w-full flex items-center justify-center gap-2 bg-black text-white font-bold tracking-wide px-6 py-3.5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_#555] hover:shadow-[2px_2px_0px_#555] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0px_#555]"
+        className="mt-1 w-full flex items-center justify-center gap-2 bg-black text-white font-bold tracking-wide px-6 py-3.5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_#555] hover:shadow-[2px_2px_0px_#555] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all duration-75 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0px_#555] disabled:active:shadow-[4px_4px_0px_#555] disabled:active:translate-x-0 disabled:active:translate-y-0"
       >
         <UserPlus className="w-4 h-4" /> Get Started
       </button>
