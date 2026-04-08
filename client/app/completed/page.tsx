@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { CompletedItem } from "./item";
 import tokenSet from "@/lib/tokenset";
+import RouteProtector from "@/middleware/routematcher";
 
 export default function CompletedPage() {
   const [folders, setFolders] = useState<
@@ -27,7 +28,8 @@ export default function CompletedPage() {
         headers: { Authorization: accessToken || "" },
       });
       const newAccessToken = res.headers?.get("Authorization");
-      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+      if (newAccessToken && newAccessToken !== accessToken)
+        tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
@@ -52,21 +54,20 @@ export default function CompletedPage() {
     fetchFolders();
   }, [fetchFolders]);
 
-
-
   const filtered = folders.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
+      <RouteProtector />
       {/* Add Bar */}
       <div className="flex items-center gap-4 mb-8">
         <button
           className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl font-bold border-2 border-black shadow hover:bg-gray-800 transition-all"
           onClick={() => router.push("/completed/add")}
         >
-          <Plus className="w-5 h-5"/> Folder
+          <Plus className="w-5 h-5" /> Folder
         </button>
         <div className="relative w-64">
           <input
