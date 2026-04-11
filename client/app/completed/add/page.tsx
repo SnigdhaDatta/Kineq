@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import RouteProtector from "@/middleware/routematcher";
+import tokenSet from "@/lib/tokenset";
 
 export default function AddCompletedFolderPage() {
   const [name, setName] = useState("");
@@ -30,6 +31,8 @@ export default function AddCompletedFolderPage() {
         },
         body: JSON.stringify({ name, coverImage }),
       });
+      const newAccessToken = res.headers?.get("Authorization");
+      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
