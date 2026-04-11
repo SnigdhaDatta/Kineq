@@ -144,7 +144,7 @@ export default function LandingPage() {
       {/* ══════════════ HERO ══════════════ */}
       <section
         ref={heroRef}
-        className="relative flex flex-col items-center min-h-screen overflow-hidden w-full"
+        className="relative flex flex-col items-center min-h-screen overflow-hidden w-full px-4"
         style={{ background: "#fafafa" }}
       >
         {/* Parallax dot grid */}
@@ -184,10 +184,10 @@ export default function LandingPage() {
 
         {/* Dev badge */}
         <div
-          className="fade-up rounded-full border-2 border-black px-5 py-2 shadow-[3px_3px_0px_#000] bg-white mt-16 relative z-10"
+          className="fade-up rounded-full border-2 border-black px-3 py-1.5 sm:px-5 sm:py-2 shadow-[3px_3px_0px_#000] bg-white mt-16 relative z-10"
           style={{ animationDelay: "0.1s", opacity: 0 }}
         >
-          <p className="text-center text-xs font-mono font-bold tracking-[0.3em] uppercase text-gray-500">
+          <p className="text-center text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] sm:tracking-[0.3em] uppercase text-gray-500">
             ⚙ Currently Under Development
           </p>
         </div>
@@ -265,7 +265,7 @@ export default function LandingPage() {
 
         {/* CTAs */}
         <div
-          className="fade-up flex flex-col sm:flex-row gap-4 mt-8 relative z-10"
+          className="fade-up flex flex-col sm:flex-row items-center gap-4 mt-8 relative z-10"
           style={{ animationDelay: "0.85s", opacity: 0 }}
         >
           <Link href="/signup">
@@ -280,7 +280,7 @@ export default function LandingPage() {
 
         {/* Mock UI */}
         <div
-          className="fade-up relative mt-14 mx-4 z-10"
+          className="fade-up relative mt-14 mx-4 px-4 z-10"
           style={{
             animationDelay: "1s",
             opacity: 0,
@@ -346,7 +346,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Scroll cue */}
+        {/* Scroll cue
         <div
           className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
           style={{ animation: "pulse 2s ease infinite" }}
@@ -355,8 +355,8 @@ export default function LandingPage() {
             SCROLL
           </span>
           <div className="w-px h-8 bg-gray-300" />
-        </div>
-      </section>
+        </div> */}
+      </section> 
 
       {/* ══════════════ MARQUEE ══════════════ */}
       <div className="border-y-2 border-black bg-black text-white py-3 overflow-hidden">
