@@ -16,6 +16,7 @@ import {
   XCircle,
 } from "lucide-react";
 import RouteProtector from "@/middleware/routematcher";
+import tokenSet from "@/lib/tokenset";
 
 interface Drama {
   _id: string;
@@ -66,6 +67,8 @@ export default function CompletedFolderPage() {
           headers: { Authorization: accessToken || "" },
         },
       );
+      const newAccessToken = res.headers?.get("Authorization");
+      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
@@ -112,6 +115,8 @@ export default function CompletedFolderPage() {
           body: JSON.stringify({ name: newName, coverImageUrl: "" }),
         },
       );
+      const newAccessToken = res.headers?.get("Authorization");
+      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
@@ -146,6 +151,8 @@ export default function CompletedFolderPage() {
           },
         },
       );
+      const newAccessToken = res.headers?.get("Authorization");
+      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
@@ -326,8 +333,8 @@ export default function CompletedFolderPage() {
           >
             <Plus className="w-5 h-5" /> Add
           </button>
-          <div className="text-lg font-mono text-gray-500">
-            Click to add your first completed drama in this folder
+          <div className="text-lg font-mono text-gray-500 text-center">
+            Click to add your first completed movie/series in this folder
           </div>
         </div>
       )}
