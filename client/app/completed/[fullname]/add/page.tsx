@@ -60,11 +60,9 @@ export default function AddCompletedDramaPage() {
           body: JSON.stringify({ name, coverImageUrl }),
         },
       );
-
-      const data = await res.json();
       const newAccessToken = res.headers?.get("Authorization");
-      if (newAccessToken) tokenSet(newAccessToken);
-
+      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+      const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
           router.push("/login");
