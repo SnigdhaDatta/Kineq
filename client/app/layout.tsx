@@ -33,7 +33,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black `}
       >
         <Header />
-        <main className="mx-auto min-h-screen bg-white px-4">{children}</main>
+        <main className="mx-auto min-h-screen">{children}</main>
         <Footer />
       </body>
     </html>
