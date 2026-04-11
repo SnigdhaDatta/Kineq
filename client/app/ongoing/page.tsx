@@ -138,7 +138,7 @@ export default function OngoingPage() {
           >
             <Plus className="w-5 h-5" /> Add
           </button>
-          <div className="text-lg font-mono text-gray-500">
+          <div className="text-lg font-mono text-gray-500 text-center">
             Click to add your first ongoing item
           </div>
         </div>
