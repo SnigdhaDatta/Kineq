@@ -1,4 +1,1 @@
-*
-!client/**
-!.vercelignore
-!vercel.json
+backend/
