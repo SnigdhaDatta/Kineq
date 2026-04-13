@@ -22,8 +22,8 @@ mongoose
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://kineq.vercel.app", "https://kineq-428ow1im2-snigdha-dattas-projects.vercel.app"],
-    credentials: true,
+    origin: process.env.client_url,
+    credentials: true, // Allow cookies to be sent in cross-origin requests
     exposedHeaders: ["Authorization"],
   }),
 );
