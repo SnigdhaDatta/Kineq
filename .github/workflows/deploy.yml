@@ -76,18 +76,3 @@ jobs:
             docker image prune -f
 
             echo "Deployment completed successfully!"
-
-
-
-
-            set -e
-            docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-            docker pull ${{ env.IMAGE_NAME }}:${{ github.sha }}
-            docker stop kineq-backend || true
-            docker rm kineq-backend || true
-            docker run -d \
-              --name kineq-backend \
-              --restart unless-stopped \
-              -p 8000:8000 \
-              --env-file /opt/kineq/backend/.env \
-              ${{ env.IMAGE_NAME }}:${{ github.sha }}
