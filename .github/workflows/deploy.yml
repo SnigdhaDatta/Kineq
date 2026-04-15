@@ -70,8 +70,8 @@ jobs:
             export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
             export GITHUB_SHA="${{ github.sha }}"
 
-            docker compose pull 
-            docker compose up -d
+            docker-compose pull
+            docker-compose up -d
 
             docker image prune -f
 
