@@ -1,0 +1,9 @@
+services:
+  kineq-api:
+    image: ${DOCKERHUB_USERNAME}/kineq-api:${GITHUB_SHA}
+    env_file:
+      - ./.env
+    
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
