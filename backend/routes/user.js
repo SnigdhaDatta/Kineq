@@ -69,7 +69,7 @@ UserRouter.post("/logout", async (req,res)=>{
     try {
         const refreshToken = req.cookies?.refreshToken;
         if(!refreshToken){
-            res.cookie.clearCookie('refreshToken', { path: '/' });
+            res.clearCookie('refreshToken', { path: '/' });
             return res.status(400).json({error: 'REFRESH_EXPIRED'});
         }
         const hashedRefreshToken = crypto.createHmac('sha256', process.env.refresh_token_pepper).update(refreshToken).digest('hex');
