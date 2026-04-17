@@ -1,6 +1,8 @@
 .env
 .env.*
 node_modules
+docker-compose.yml
+nginx.conf
 npm-debug.log
 yarn-error.log
 .git
