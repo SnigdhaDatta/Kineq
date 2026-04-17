@@ -110,7 +110,7 @@ watchlistRouter.delete("/:id", async (req, res) => {
 });
 
 watchlistRouter.post("/:id/move", async (req, res) => {
-  const item = watchlist.findOne({ _id: req.params.id, userId: req.user._id });
+  const item = await watchlist.findOne({ _id: req.params.id, userId: req.user._id });
   if (!item) {
     return res.status(404).json({ error: "Item not found in watchlist" });
   }
