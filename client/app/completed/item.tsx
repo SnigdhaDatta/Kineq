@@ -5,12 +5,21 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import tokenSet from "@/lib/tokenset";
 
+import { type NotificationType } from "@/components/notification-bar";
+
 interface CompletedItemProps {
   folder: { _id: string; name: string; coverImage?: string };
   onRefresh: () => void;
+  notify: (type: NotificationType, message: string) => void;
+  onItemChanged?: (id: string, updated?: { name?: string }) => void;
 }
 
-export function CompletedItem({ folder, onRefresh }: CompletedItemProps) {
+export function CompletedItem({
+  folder,
+  onRefresh,
+  notify,
+  onItemChanged,
+}: CompletedItemProps) {
   const [isPending, startTransition] = useTransition();
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(folder.name);
@@ -27,6 +36,10 @@ export function CompletedItem({ folder, onRefresh }: CompletedItemProps) {
       const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
       const accessToken = appData.accesstoken;
       try {
+        // Optimistic UI update
+        if (onItemChanged) {
+          onItemChanged(folder._id, { name: editName });
+        }
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/completed/${folder._id}`,
           {
@@ -40,13 +53,15 @@ export function CompletedItem({ folder, onRefresh }: CompletedItemProps) {
           },
         );
         const newAccessToken = res.headers?.get("Authorization");
-        if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+        if (newAccessToken && newAccessToken !== accessToken)
+          tokenSet(newAccessToken);
         const data = await res.json();
         if (!res.ok) {
-          console.error(data.error || "Failed to update");
+          notify("error", data.error || "Failed to update");
           return;
         }
         setEditing(false);
+        notify("success", "Folder updated");
         onRefresh();
       } catch (err) {
         console.error(err);
@@ -59,6 +74,10 @@ export function CompletedItem({ folder, onRefresh }: CompletedItemProps) {
       const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
       const accessToken = appData.accesstoken;
       try {
+        // Optimistic UI update
+        if (onItemChanged) {
+          onItemChanged(folder._id, undefined);
+        }
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/completed/${folder._id}`,
           {
@@ -68,12 +87,14 @@ export function CompletedItem({ folder, onRefresh }: CompletedItemProps) {
           },
         );
         const newAccessToken = res.headers?.get("Authorization");
-        if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+        if (newAccessToken && newAccessToken !== accessToken)
+          tokenSet(newAccessToken);
         const data = await res.json();
         if (!res.ok) {
-          console.error(data.error || "Failed to delete");
+          notify("error", data.error || "Failed to delete");
           return;
         }
+        notify("success", "Folder deleted");
         onRefresh();
       } catch (err) {
         console.error(err);
