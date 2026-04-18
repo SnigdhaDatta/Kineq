@@ -2,11 +2,23 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
-import { WatchlistItem } from "./item";
+import WatchlistItem from "./item";
+import NotificationBar, {
+  type NotificationType,
+} from "@/components/notification-bar";
 import tokenSet from "@/lib/tokenset";
 import RouteProtector from "@/middleware/routematcher";
 
 export default function WatchlistPage() {
+  const [toast, setToast] = useState<{
+    open: boolean;
+    type: NotificationType;
+    message: string;
+  }>({ open: false, type: "info", message: "" });
+
+  function notify(type: NotificationType, message: string) {
+    setToast({ open: true, type, message });
+  }
   const [watchlist, setWatchlist] = useState<
     Array<{ _id: string; name: string; coverImage?: string }>
   >([]);
@@ -58,6 +70,12 @@ export default function WatchlistPage() {
 
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
+      <NotificationBar
+        open={toast.open}
+        type={toast.type}
+        message={toast.message}
+        onClose={() => setToast((prev) => ({ ...prev, open: false }))}
+      />
       <RouteProtector />
       {/* Add and Search Bar */}
       <div className="flex items-center gap-4 mb-8">
@@ -93,7 +111,16 @@ export default function WatchlistPage() {
             <WatchlistItem
               key={item._id}
               item={item}
-              onRefresh={fetchWatchlist}
+              onItemChanged={(id, updated) => {
+                if (updated) {
+                  setWatchlist((prev) =>
+                    prev.map((i) => (i._id === id ? { ...i, ...updated } : i)),
+                  );
+                } else {
+                  setWatchlist((prev) => prev.filter((i) => i._id !== id));
+                }
+              }}
+              notify={notify}
             />
           ))}
         </div>
