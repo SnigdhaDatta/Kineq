@@ -3,6 +3,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { CompletedItem } from "./item";
+import NotificationBar, {
+  type NotificationType,
+} from "@/components/notification-bar";
 import tokenSet from "@/lib/tokenset";
 import RouteProtector from "@/middleware/routematcher";
 
@@ -12,9 +15,17 @@ export default function CompletedPage() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const [toast, setToast] = useState<{
+    open: boolean;
+    type: NotificationType;
+    message: string;
+  }>({ open: false, type: "info", message: "" });
   const [search, setSearch] = useState("");
   const router = useRouter();
+
+  function notify(type: NotificationType, message: string) {
+    setToast({ open: true, type, message });
+  }
 
   const fetchFolders = useCallback(async () => {
     setLoading(true);
@@ -37,7 +48,6 @@ export default function CompletedPage() {
           return;
         }
         setError(data.error || "Failed to fetch folders");
-        setMessage("");
         return;
       }
       setFolders(data);
@@ -60,6 +70,12 @@ export default function CompletedPage() {
 
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
+      <NotificationBar
+        open={toast.open}
+        type={toast.type}
+        message={toast.message}
+        onClose={() => setToast((prev) => ({ ...prev, open: false }))}
+      />
       <RouteProtector />
       {/* Add Bar */}
       <div className="flex items-center gap-4 mb-8">
@@ -82,9 +98,6 @@ export default function CompletedPage() {
       </div>
 
       {/* Feedback messages */}
-      {message && (
-        <div className="text-green-600 font-mono text-sm mb-2">{message}</div>
-      )}
       {error && (
         <div className="text-red-500 font-mono text-sm mb-2">{error}</div>
       )}
@@ -99,6 +112,16 @@ export default function CompletedPage() {
               key={folder._id}
               folder={folder}
               onRefresh={fetchFolders}
+              notify={notify}
+              onItemChanged={(id, updated) => {
+                if (updated) {
+                  setFolders((prev) =>
+                    prev.map((i) => (i._id === id ? { ...i, ...updated } : i)),
+                  );
+                } else {
+                  setFolders((prev) => prev.filter((i) => i._id !== id));
+                }
+              }}
             />
           ))}
         </div>
