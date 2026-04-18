@@ -9,32 +9,32 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import tokenSet from "@/lib/tokenset";
-import NotificationBar, {
-  type NotificationType,
-} from "@/components/notification-bar";
+import { type NotificationType } from "@/components/notification-bar";
 
 interface OngoingItemProps {
   item: { _id: string; name: string; episode: number; coverImage?: string };
   folders: Array<{ _id: string; name: string }>;
   onRefresh: () => void;
+  notify: (type: NotificationType, message: string) => void;
+  onItemChanged?: (
+    id: string,
+    updated?: { name?: string; episode?: number },
+  ) => void;
 }
 
-export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
+export function OngoingItem({
+  item,
+  folders,
+  onRefresh,
+  notify,
+  onItemChanged,
+}: OngoingItemProps) {
   const [isPending, startTransition] = useTransition();
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(item.name);
   const [editEpisode, setEditEpisode] = useState(item.episode);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showFolderPicker, setShowFolderPicker] = useState(false);
-  const [toast, setToast] = useState<{
-    open: boolean;
-    type: NotificationType;
-    message: string;
-  }>({ open: false, type: "info", message: "" });
-
-  function notify(type: NotificationType, message: string) {
-    setToast({ open: true, type, message });
-  }
 
   async function handleEdit() {
     if (
@@ -49,6 +49,10 @@ export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
       const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
       const accessToken = appData.accesstoken;
       try {
+        // Optimistic UI update
+        if (onItemChanged) {
+          onItemChanged(item._id, { name: editName, episode: editEpisode });
+        }
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/ongoing/${item._id}`,
           {
@@ -76,7 +80,7 @@ export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
         }
         setEditing(false);
         setMenuOpen(false);
-        notify("success", "Updated successfully");
+        notify("success", data.message || "Updated successfully");
         onRefresh();
       } catch (err) {
         notify("error", "Something went wrong while updating");
@@ -90,6 +94,10 @@ export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
       const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
       const accessToken = appData.accesstoken;
       try {
+        // Optimistic UI update
+        if (onItemChanged) {
+          onItemChanged(item._id, undefined);
+        }
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/ongoing/${item._id}`,
           {
@@ -114,6 +122,7 @@ export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
         setMenuOpen(false);
         notify("success", data.message || "Deleted successfully");
         onRefresh();
+        //onRefresh();
       } catch (err) {
         notify("error", "Something went wrong while deleting");
         console.error(err);
@@ -127,6 +136,10 @@ export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
       const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
       const accessToken = appData.accesstoken;
       try {
+        // Optimistic UI update (remove from ongoing)
+        if (onItemChanged) {
+          onItemChanged(item._id, undefined);
+        }
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/ongoing/${item._id}/${folderId}`,
           {
@@ -155,6 +168,7 @@ export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
         setShowFolderPicker(false);
         notify("success", data.message || "Moved to completed");
         onRefresh();
+        //onRefresh();
       } catch (err) {
         notify("error", "Something went wrong while moving item");
         console.error(err);
@@ -163,59 +177,53 @@ export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
   }
 
   return (
-    <>
-      <NotificationBar
-        open={toast.open}
-        type={toast.type}
-        message={toast.message}
-        onClose={() => setToast((prev) => ({ ...prev, open: false }))}
-      />
-      <div className="border-2 border-black rounded-xl p-4 bg-white shadow flex flex-col gap-2 relative">
-        <div className="flex items-center justify-between">
-          {editing ? (
-            <div className="flex flex-wrap items-center gap-2 w-full">
-              <input
-                type="text"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                className="font-bold text-lg border-b-2 border-black outline-none px-1 bg-white flex-1"
-                disabled={isPending}
-              />
-              <input
-                type="number"
-                value={editEpisode}
-                onChange={(e) => setEditEpisode(parseInt(e.target.value) || 1)}
-                className="font-bold text-sm border-b-2 border-black outline-none px-1 bg-white w-16"
-                disabled={isPending}
-              />
-              <button
-                className="rounded-full p-1 bg-white flex items-center justify-center disabled:opacity-50"
-                onClick={handleEdit}
-                disabled={isPending}
-                aria-label="Save"
-              >
-                <CheckCircle2 className="w-6 h-6 text-green-500" />
-              </button>
-              <button
-                className="rounded-full p-1 bg-white flex items-center justify-center disabled:opacity-50"
-                onClick={() => {
-                  setEditing(false);
-                  setEditName(item.name);
-                  setEditEpisode(item.episode);
-                }}
-                disabled={isPending}
-                aria-label="Cancel"
-              >
-                <XCircle className="w-6 h-6 text-gray-500" />
-              </button>
-            </div>
-          ) : (
-            <>
-              <div>
+    <div className="border-2 border-black rounded-xl p-4 bg-white shadow flex flex-col gap-2 relative">
+      <div className="flex items-center justify-between w-full">
+        {editing ? (
+          <div className="flex flex-wrap items-center gap-2 w-full">
+            <input
+              type="text"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              className="font-bold text-lg border-b-2 border-black outline-none px-1 bg-white flex-1"
+              disabled={isPending}
+            />
+            <input
+              type="number"
+              value={editEpisode}
+              onChange={(e) => setEditEpisode(parseInt(e.target.value) || 1)}
+              className="font-bold text-sm border-b-2 border-black outline-none px-1 bg-white w-16"
+              disabled={isPending}
+            />
+            <button
+              className="rounded-full p-1 bg-white flex items-center justify-center disabled:opacity-50"
+              onClick={handleEdit}
+              disabled={isPending}
+              aria-label="Save"
+            >
+              <CheckCircle2 className="w-6 h-6 text-green-500" />
+            </button>
+            <button
+              className="rounded-full p-1 bg-white flex items-center justify-center disabled:opacity-50"
+              onClick={() => {
+                setEditing(false);
+                setEditName(item.name);
+                setEditEpisode(item.episode);
+              }}
+              disabled={isPending}
+              aria-label="Cancel"
+            >
+              <XCircle className="w-6 h-6 text-gray-500" />
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-between w-full">
+              <div className="flex flex-col">
                 <span className="font-bold text-lg">{item.name}</span>
                 <p className="text-sm text-gray-500">Episode: {item.episode}</p>
               </div>
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <button
                   className="ml-2 text-gray-500 hover:text-black disabled:opacity-50"
                   onClick={() => {
@@ -289,19 +297,19 @@ export function OngoingItem({ item, folders, onRefresh }: OngoingItemProps) {
                   </div>
                 )}
               </div>
-            </>
-          )}
-        </div>
-        {item.coverImage && (
-          <Image
-            width={400}
-            height={300}
-            src={item.coverImage}
-            alt={item.name}
-            className="w-full h-40 object-cover rounded-lg border"
-          />
+            </div>
+          </>
         )}
       </div>
-    </>
+      {item.coverImage && (
+        <Image
+          width={400}
+          height={300}
+          src={item.coverImage}
+          alt={item.name}
+          className="w-full h-40 object-cover rounded-lg border"
+        />
+      )}
+    </div>
   );
 }
