@@ -3,6 +3,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 import { OngoingItem } from "./item";
+import NotificationBar, {
+  type NotificationType,
+} from "@/components/notification-bar";
 import tokenSet from "@/lib/tokenset";
 import RouteProtector from "@/middleware/routematcher";
 
@@ -16,7 +19,16 @@ export default function OngoingPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [toast, setToast] = useState<{
+    open: boolean;
+    type: NotificationType;
+    message: string;
+  }>({ open: false, type: "info", message: "" });
   const router = useRouter();
+
+  function notify(type: NotificationType, message: string) {
+    setToast({ open: true, type, message });
+  }
 
   const fetchFolders = useCallback(async () => {
     const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
@@ -90,6 +102,12 @@ export default function OngoingPage() {
 
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
+      <NotificationBar
+        open={toast.open}
+        type={toast.type}
+        message={toast.message}
+        onClose={() => setToast((prev) => ({ ...prev, open: false }))}
+      />
       <RouteProtector />
       {/* Add and Search Bar */}
       <div className="flex items-center gap-4 mb-8">
@@ -127,6 +145,16 @@ export default function OngoingPage() {
               item={item}
               folders={folders}
               onRefresh={fetchOngoing}
+              notify={notify}
+              onItemChanged={(id, updated) => {
+                if (updated) {
+                  setOngoing((prev) =>
+                    prev.map((i) => (i._id === id ? { ...i, ...updated } : i)),
+                  );
+                } else {
+                  setOngoing((prev) => prev.filter((i) => i._id !== id));
+                }
+              }}
             />
           ))}
         </div>
