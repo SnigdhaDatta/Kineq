@@ -616,7 +616,7 @@ export default function LandingPage() {
             },
             {
               q: "Do I need to create an account?",
-              a: "You&apos;ll need a quick signup to save your watchlist across devices, but it takes under 30 seconds with no credit card required.",
+              a: "You will need a quick signup to save your watchlist across devices, but it takes under 30 seconds with no credit card required.",
               delay: "0.15s",
             },
             {
