@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import RouteProtector from "@/middleware/routematcher";
 import tokenSet from "@/lib/tokenset";
+import NotificationBar, {
+  type NotificationType,
+} from "@/components/notification-bar";
 
 interface Drama {
   _id: string;
@@ -33,6 +36,11 @@ export default function CompletedFolderPage() {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{
+    open: boolean;
+    type: NotificationType;
+    message: string;
+  }>({ open: false, type: "info", message: "" });
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -68,7 +76,8 @@ export default function CompletedFolderPage() {
         },
       );
       const newAccessToken = res.headers?.get("Authorization");
-      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+      if (newAccessToken && newAccessToken !== accessToken)
+        tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
@@ -99,8 +108,11 @@ export default function CompletedFolderPage() {
 
   // PATCH request to update a drama by _id
   async function handleEdit(id: string, newName: string) {
-    setError("");
-    setMessage("");
+    // Only show notification, not error/message on main screen
+    // Optimistic UI update
+    setDramas((prev) =>
+      prev.map((d) => (d._id === id ? { ...d, name: newName } : d)),
+    );
     const accessToken = getAccessToken();
     try {
       const res = await fetch(
@@ -116,29 +128,40 @@ export default function CompletedFolderPage() {
         },
       );
       const newAccessToken = res.headers?.get("Authorization");
-      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+      if (newAccessToken && newAccessToken !== accessToken)
+        tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
           router.push("/login");
           return;
         }
-        setError(data.error || data.message);
-        setMessage("");
+        setToast({
+          open: true,
+          type: "error",
+          message: data.error || data.message,
+        });
+        // Revert optimistic update
+        fetchDramas();
         return;
       }
-      setError("");
-      setMessage(data.message);
-      fetchDramas();
+      setToast({
+        open: true,
+        type: "success",
+        message: data.message || "Updated successfully",
+      });
     } catch (err: unknown) {
-      setError((err as Error).message);
+      setToast({ open: true, type: "error", message: (err as Error).message });
+      // Revert optimistic update
+      fetchDramas();
     }
   }
 
   // DELETE request to remove a drama by _id
   async function handleDelete(id: string) {
-    setError("");
-    setMessage("");
+    // Only show notification, not error/message on main screen
+    // Optimistic UI update
+    setDramas((prev) => prev.filter((d) => d._id !== id));
     const accessToken = getAccessToken();
     try {
       const res = await fetch(
@@ -152,22 +175,32 @@ export default function CompletedFolderPage() {
         },
       );
       const newAccessToken = res.headers?.get("Authorization");
-      if (newAccessToken && newAccessToken !== accessToken) tokenSet(newAccessToken);
+      if (newAccessToken && newAccessToken !== accessToken)
+        tokenSet(newAccessToken);
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
           router.push("/login");
           return;
         }
-        setError(data.error || data.message);
-        setMessage("");
+        setToast({
+          open: true,
+          type: "error",
+          message: data.error || data.message,
+        });
+        // Revert optimistic update
+        fetchDramas();
         return;
       }
-      setError("");
-      setMessage(data.message);
-      fetchDramas();
+      setToast({
+        open: true,
+        type: "success",
+        message: data.message || "Deleted successfully",
+      });
     } catch (err: unknown) {
-      setError((err as Error).message);
+      setToast({ open: true, type: "error", message: (err as Error).message });
+      // Revert optimistic update
+      fetchDramas();
     }
   }
 
@@ -185,6 +218,12 @@ export default function CompletedFolderPage() {
 
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
+      <NotificationBar
+        open={toast.open}
+        type={toast.type}
+        message={toast.message}
+        onClose={() => setToast((prev) => ({ ...prev, open: false }))}
+      />
       <RouteProtector />
       {/* Folder Name Heading */}
       <div className="mb-8 sticky top-0 z-10">
@@ -211,16 +250,13 @@ export default function CompletedFolderPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full px-4 py-2 border-2 border-black rounded-xl font-mono text-sm text-black placeholder-gray-300 focus:outline-none focus:shadow-[3px_3px_0px_#000] transition-shadow duration-150"
-            placeholder="Search dramas..."
+            placeholder={`Search ${folderDisplayName}...`}
           />
           <Search className="absolute right-3 top-2.5 w-4 h-4 text-gray-400" />
         </div>
       </div>
 
-      {/* Feedback messages */}
-      {message && (
-        <div className="text-green-600 font-mono text-sm mb-2">{message}</div>
-      )}
+      {/* Feedback messages (only for fetch errors, not edit/delete) */}
       {error && (
         <div className="text-red-500 font-mono text-sm mb-2">{error}</div>
       )}
