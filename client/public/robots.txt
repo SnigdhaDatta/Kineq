@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kin-eq.snowpie.me/sitemap.xml
