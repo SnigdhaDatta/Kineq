@@ -10,6 +10,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const router = useRouter();
 
   const hasMinLength = password.length >= 8;
@@ -56,7 +57,20 @@ export default function SignupPage() {
     if (!res.ok) {
       setError(data.error || "Signup failed");
     } else {
-      router.push("/login");
+      setMessage(data.message || "Login successful!");
+      const accessToken = res.headers?.get("Authorization");
+      if (accessToken) {
+        // Store all app data under 'kineq' key
+        const appData = {
+          accesstoken: accessToken, // key is 'accesstoken', value is the token
+          // Add more properties here as needed (e.g., user info)
+        };
+        localStorage.setItem("kineq", JSON.stringify(appData));
+      }
+      setMessage("Login successful!");
+      setTimeout(() => {
+        router.push("/watchlist");
+      }, 1200); // Show message for 1.2 seconds before redirect
     }
   }
 
@@ -162,8 +176,14 @@ export default function SignupPage() {
 
       {/* Error */}
       {error && (
-        <div className="flex items-center gap-2 px-4 py-3 border-2 border-black rounded-xl bg-white text-sm font-mono font-bold text-black">
+        <div className="flex items-center gap-2 px-4 py-3 bg-white text-sm font-mono font-bold text-red-600">
           ⚠ {error}
+        </div>
+      )}
+      {/* if message then show message in green success box */}
+      {message && (
+        <div className="flex items-center gap-2 px-4 py-3 bg-white text-sm font-mono font-bold text-green-600">
+          ✅ {message}
         </div>
       )}
 
