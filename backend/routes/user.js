@@ -17,7 +17,24 @@ UserRouter.post("/signup", async (req,res)=>{
             return res.status(400).json({error: 'Please Provide all the required Fields'});
         }
         const user = await User.create({fullName, email, password, isVerified});
-        res.status(201).json({message: 'User created successfully, now login with your credentials'});
+        const accesstoken = createAccessToken(user);
+        res.setHeader('Authorization', `Bearer ${accesstoken}`); // Set the token in the response header
+        
+        //creating refresh token and saving it in the database
+        const refreshToken = createRefreshToken();
+        const hashedRefreshToken = crypto.createHmac('sha256', process.env.refresh_token_pepper).update(refreshToken).digest('hex');
+        user.refreshToken = hashedRefreshToken;
+        await user.save();
+
+        //in production set secure: true and sameSite: 'none' to allow cross-site cookies, in development you can set secure: false and sameSite: 'lax'
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production' ? true : false,
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set the cookie to expire in 7 days from now
+        });
+
+        return res.status(201).json({message: 'Signup successful'});
         
     } catch (error) {
         res.status(500).json({error: error.message});
