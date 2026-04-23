@@ -5,6 +5,8 @@ import "./global.css";
 import Footer from "../components/footer";
 import Header from "../components/header";
 
+import ChatWidget from "../components/ChatWidget";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth hydrated">
+    <html lang="en" data-scroll-behavior="smooth" className="scroll-smooth hydrated">
       <Head>
         {/* Structured Data: WebSite & Organization */}
         <script
@@ -89,6 +91,7 @@ export default function RootLayout({
         <Header />
         <main className="mx-auto min-h-screen">{children}</main>
         <Footer />
+        <ChatWidget />
       </body>
     </html>
   );
