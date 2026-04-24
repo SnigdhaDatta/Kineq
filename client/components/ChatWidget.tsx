@@ -10,9 +10,17 @@ export default function ChatWidget() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
-    const token = appData?.accesstoken || localStorage.getItem("accessToken");
-    setAccessToken(token);
+    const checkToken = () => {
+      const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
+      const token = appData?.accesstoken || null;
+      setAccessToken(token);
+    };
+    checkToken(); // checktoken function is called to set the initial state of accessToken when the component mounts
+    window.addEventListener("authChanged", checkToken);
+
+    return () => {
+      window.removeEventListener("authChanged", checkToken);
+    };
   }, []);
 
   if (!accessToken) return null;
