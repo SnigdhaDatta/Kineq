@@ -17,17 +17,22 @@ export default function RouteProtector() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (PUBLIC_ROUTES.has(pathname)) {
-      return;
-    }
+    const check = () => {
+      if (PUBLIC_ROUTES.has(pathname)) return;
 
-    const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
-    const accessToken =
-      appData?.accesstoken || localStorage.getItem("accessToken");
-    if (!accessToken) {
-      router.replace("/login");
-    }
+      const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
+      const token = appData?.accesstoken || null;
+
+      if (!token && pathname !== "/login") {
+        router.replace("/login");
+      }
+    };
+
+    check();
+
+    window.addEventListener("authChanged", check);
+    return () => window.removeEventListener("authChanged", check);
   }, [router, pathname]);
 
-  return null; // This component doesn't render anything
+  return null;
 }
