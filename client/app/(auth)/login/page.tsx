@@ -42,6 +42,7 @@ export default function LoginPage() {
           // Add more properties here as needed (e.g., user info)
         };
         localStorage.setItem("kineq", JSON.stringify(appData));
+        window.dispatchEvent(new Event("authChanged"));
       }
       setMessage("Login successful!");
       setTimeout(() => {
