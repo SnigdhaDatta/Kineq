@@ -103,6 +103,7 @@ export function UserMenu() {
       // Ignore errors, proceed with logout
     }
     localStorage.removeItem("kineq");
+    window.dispatchEvent(new Event("authChanged")); // Notify other tabs about logout
     setIsLoggedIn(false);
     router.replace("/");
   }
