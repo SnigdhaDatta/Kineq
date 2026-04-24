@@ -9,6 +9,7 @@ const { checkAuthentication } = require("./middlewares/authentication");
 const ongoingRouter = require("./routes/ongoing");
 const watchlistRouter = require("./routes/watchlist");
 const completedRouter = require("./routes/completed");
+const chatbotRouter = require("./routes/chatbot");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 8000;
@@ -36,6 +37,7 @@ app.use("/api/user", UserRouter);
 app.use("/api/watchlist", checkAuthentication, watchlistRouter);
 app.use("/api/ongoing", checkAuthentication, ongoingRouter);
 app.use("/api/completed", checkAuthentication, completedRouter);
+app.use("/api/chatbot",checkAuthentication, chatbotRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Welcome to Kineq API" });
