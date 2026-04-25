@@ -1,10 +1,12 @@
 # Kineq
 
-Kineq is a full-stack web application to track shows/items across three personal states:
+Kineq is a full-stack web application to track shows/items across three personal states and features:
 
 - watchlist
 - ongoing
 - completed (folder-based)
+- chatbot (for searching about movies/series/animes information, getting   recommendations, etc)
+
 
 The project is split into:
 
