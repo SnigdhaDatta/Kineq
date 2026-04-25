@@ -1,10 +1,12 @@
 # Kineq Backend
 
-This backend provides authentication and CRUD APIs for three user-specific collections:
+This backend provides authentication and CRUD APIs for three user-specific collections and features:
 
 - watchlist
 - ongoing
 - completed (folders + items inside each folder)
+- chatbot (for searching about movies/series/animes information, getting   recommendations, etc)
+
 
 It is built with Express, MongoDB (Mongoose), Redis caching, and JWT + refresh-token cookie auth.
 
