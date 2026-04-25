@@ -188,7 +188,7 @@ export default function LandingPage() {
           style={{ animationDelay: "0.1s", opacity: 0 }}
         >
           <p className="text-center text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] sm:tracking-[0.3em] uppercase text-gray-500">
-            ⚙ Currently Under Development
+            ⚙ V1 is live
           </p>
         </div>
 
