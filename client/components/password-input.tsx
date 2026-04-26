@@ -10,6 +10,7 @@ interface PasswordInputProps {
   required?: boolean;
   className?: string;
   inputId?: string;
+  disabled?: boolean;
 }
 
 export default function PasswordInput({
@@ -19,6 +20,7 @@ export default function PasswordInput({
   required = false,
   className = "",
   inputId,
+  disabled = false,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,7 +33,8 @@ export default function PasswordInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className={`w-full px-4 pr-11 py-3 border-2 border-black rounded-xl bg-white font-mono text-sm text-black placeholder-gray-300 focus:outline-none focus:shadow-[3px_3px_0px_#000] transition-shadow duration-150 ${className}`}
+        disabled={disabled}
+        className={`w-full px-4 pr-11 py-3 border-2 border-black rounded-xl bg-white font-mono text-sm text-black placeholder-gray-300 focus:outline-none focus:shadow-[3px_3px_0px_#000] transition-shadow duration-150 ${className} ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
       />
       <button
         type="button"
