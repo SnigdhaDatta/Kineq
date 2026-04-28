@@ -20,6 +20,8 @@ It is built with Express, MongoDB (Mongoose), Redis caching, and JWT + refresh-t
 - bcrypt
 - cookie-parser
 - Docker
+- Tavily API
+- Resend API
 
 ## Run Locally
 
@@ -137,12 +139,16 @@ Protected (require auth middleware):
 - `PATCH /api/completed/:folderId/contents/:id`
 - `DELETE /api/completed/:folderId/contents/:id`
 
+- ChatBot
+- `POST /api/user/search`
+
 ## Caching
 
 Redis is used as a short-lived cache on list/detail endpoints.
 
 - Cache is invalidated on writes (create/update/delete/move)
 - Keys are user-scoped
+- Also to store Otp during signup for email verification
 
 ## Docker
 
