@@ -5,7 +5,7 @@ This backend provides authentication and CRUD APIs for three user-specific colle
 - watchlist
 - ongoing
 - completed (folders + items inside each folder)
-- chatbot (for searching about movies/series/animes information, getting   recommendations, etc)
+- chatbot (for searching about movies/series/animes information, getting recommendations, etc)
 
 
 It is built with Express, MongoDB (Mongoose), Redis caching, and JWT + refresh-token cookie auth.
@@ -71,7 +71,7 @@ NODE_ENV=development
 REDIS_HOST=...
 REDIS_PORT=...
 REDIS_PASSWORD=...
-MailTrap_Token=...
+Resend_api_token=...
 client_url=http://localhost:3000
 ```
 
