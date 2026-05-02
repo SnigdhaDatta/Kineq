@@ -94,7 +94,7 @@ export function CompletedItem({
           notify("error", data.error || "Failed to delete");
           return;
         }
-        notify("success", "Folder deleted");
+        notify("success", `${data.message}` || "Folder and its items deleted successfully");
         onRefresh();
       } catch (err) {
         console.error(err);
