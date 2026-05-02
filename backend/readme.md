@@ -5,7 +5,7 @@ This backend provides authentication and CRUD APIs for three user-specific colle
 - watchlist
 - ongoing
 - completed (folders + items inside each folder)
-- chatbot (for searching about movies/series/animes information, getting   recommendations, etc)
+- chatbot (for searching about movies/series/animes information, getting recommendations, etc)
 
 
 It is built with Express, MongoDB (Mongoose), Redis caching, and JWT + refresh-token cookie auth.
@@ -20,6 +20,8 @@ It is built with Express, MongoDB (Mongoose), Redis caching, and JWT + refresh-t
 - bcrypt
 - cookie-parser
 - Docker
+- Tavily API
+- Resend API
 
 ## Run Locally
 
@@ -69,7 +71,7 @@ NODE_ENV=development
 REDIS_HOST=...
 REDIS_PORT=...
 REDIS_PASSWORD=...
-MailTrap_Token=...
+Resend_api_token=...
 client_url=http://localhost:3000
 ```
 
@@ -137,12 +139,16 @@ Protected (require auth middleware):
 - `PATCH /api/completed/:folderId/contents/:id`
 - `DELETE /api/completed/:folderId/contents/:id`
 
+- ChatBot
+- `POST /api/user/search`
+
 ## Caching
 
 Redis is used as a short-lived cache on list/detail endpoints.
 
 - Cache is invalidated on writes (create/update/delete/move)
 - Keys are user-scoped
+- Also to store Otp during signup for email verification
 
 ## Docker
 
