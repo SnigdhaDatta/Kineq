@@ -32,15 +32,13 @@ export function OngoingItem({
   const [isPending, startTransition] = useTransition();
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(item.name);
-  const [editEpisode, setEditEpisode] = useState(item.episode);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [editEpisode, setEditEpisode] = useState<string>(String(item.episode));  const [menuOpen, setMenuOpen] = useState(false);
   const [showFolderPicker, setShowFolderPicker] = useState(false);
 
   async function handleEdit() {
-    if (
-      !editName.trim() ||
-      (editName === item.name && editEpisode === item.episode)
-    ) {
+      const parsedEpisode = parseInt(editEpisode) || 1;
+
+    if (!editName.trim() || (editName === item.name && parsedEpisode === item.episode)) { 
       setEditing(false);
       return;
     }
@@ -51,7 +49,7 @@ export function OngoingItem({
       try {
         // Optimistic UI update
         if (onItemChanged) {
-          onItemChanged(item._id, { name: editName, episode: editEpisode });
+          onItemChanged(item._id, { name: editName, episode: parsedEpisode });
         }
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/ongoing/${item._id}`,
@@ -62,7 +60,7 @@ export function OngoingItem({
               "Content-Type": "application/json",
               Authorization: accessToken || "",
             },
-            body: JSON.stringify({ name: editName, episode: editEpisode }),
+            body: JSON.stringify({ name: editName, episode: editEpisode }),          
           },
         );
         const newAccessToken = res.headers?.get("Authorization");
@@ -191,7 +189,10 @@ export function OngoingItem({
             <input
               type="number"
               value={editEpisode}
-              onChange={(e) => setEditEpisode(parseInt(e.target.value) || 1)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val === "" || /^\d+$/.test(val)) setEditEpisode(val);
+              }}              
               className="font-bold text-sm border-b-2 border-black outline-none px-1 bg-white w-16"
               disabled={isPending}
             />
@@ -208,7 +209,7 @@ export function OngoingItem({
               onClick={() => {
                 setEditing(false);
                 setEditName(item.name);
-                setEditEpisode(item.episode);
+                setEditEpisode(String(item.episode));              
               }}
               disabled={isPending}
               aria-label="Cancel"
