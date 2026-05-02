@@ -273,9 +273,11 @@ export default function LandingPage() {
               Get Started <ArrowUpRight className="w-5 h-5" />
             </button>
           </Link>
-          <button className="btn-press flex items-center gap-2 bg-white text-black text-base font-bold tracking-wide px-7 py-3.5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_#000]">
-            <Play className="w-4 h-4 fill-black" /> See how it works
-          </button>
+          <Link href="/howitworks">
+            <button className="btn-press flex items-center gap-2 bg-white text-black text-base font-bold tracking-wide px-7 py-3.5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_#000]">
+              <Play className="w-4 h-4 fill-black" /> See how it works
+            </button>
+          </Link>
         </div>
 
         {/* Mock UI */}
@@ -356,7 +358,7 @@ export default function LandingPage() {
           </span>
           <div className="w-px h-8 bg-gray-300" />
         </div> */}
-      </section> 
+      </section>
 
       {/* ══════════════ MARQUEE ══════════════ */}
       <div className="border-y-2 border-black bg-black text-white py-3 overflow-hidden">
