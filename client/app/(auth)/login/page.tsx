@@ -130,7 +130,7 @@ export default function LoginPage() {
       <p className="text-center text-xs font-mono text-gray-400 tracking-widest">
         Kineq · FREE FOREVER
       </p>
-      <div className="text-center">
+      <div className="text-center flex flex-col gap-2">
         <span className="text-sm text-gray-600 font-mono">
           Don&apos;t have an account?{" "}
           <a
@@ -138,6 +138,14 @@ export default function LoginPage() {
             className="text-black font-bold hover:underline inline-flex items-center gap-1"
           >
             Sign Up <ArrowUpRight className="w-3 h-3" />
+          </a>
+        </span>
+        <span className="text-sm text-gray-600 font-mono">
+          <a
+            href="/forget-password"
+            className="text-black font-bold hover:underline inline-flex items-center gap-1"
+          >
+            Forgot Password? <ArrowUpRight className="w-3 h-3" />
           </a>
         </span>
       </div>
