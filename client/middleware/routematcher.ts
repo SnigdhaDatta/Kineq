@@ -16,6 +16,7 @@ export default function RouteProtector() {
   const router = useRouter();
   const pathname = usePathname();
 
+
   useEffect(() => {
     const check = () => {
       if (PUBLIC_ROUTES.has(pathname)) return;
@@ -30,8 +31,6 @@ export default function RouteProtector() {
 
     check();
 
-    window.addEventListener("authChanged", check);
-    return () => window.removeEventListener("authChanged", check);
   }, [router, pathname]);
 
   return null;
