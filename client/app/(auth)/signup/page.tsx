@@ -113,7 +113,10 @@ export default function SignupPage() {
         setOtpSent(false);
         setOtpTimer(0);
       } else {
-        setMessage(data.message || "OTP sent to your email. If not in Inobx, please check your Spam folder.");
+        setMessage(
+          data.message ||
+            "OTP sent to your email. If not in Inobx, please check your Spam folder.",
+        );
         setOtpSent(true);
         setOtpTimer(120);
       }
@@ -246,10 +249,21 @@ export default function SignupPage() {
           <button
             type="button"
             onClick={handleSendOtp}
-            disabled={emailVerified || loading || !isEmailValid}
-            className={`shrink-0 px-4 py-2 rounded-xl border-2 border-black font-mono text-xs font-bold uppercase tracking-widest bg-black text-white transition-all duration-150 ${emailVerified || loading || !isEmailValid ? "opacity-50 cursor-not-allowed" : "hover:bg-white hover:text-black"}`}
+            disabled={
+              emailVerified ||
+              loading ||
+              !isEmailValid ||
+              (otpSent && otpTimer > 0)
+            }
+            className={`shrink-0 px-4 py-2 rounded-xl border-2 border-black font-mono text-xs font-bold uppercase tracking-widest bg-black text-white transition-all duration-150 ${emailVerified || loading || !isEmailValid || (otpSent && otpTimer > 0) ? "opacity-50 cursor-not-allowed" : "hover:bg-white hover:text-black"}`}
           >
-            {emailVerified ? "Verified" : otpSent ? "Resend" : "Verify"}
+            {emailVerified
+              ? "Verified"
+              : otpSent && otpTimer > 0
+                ? `Resend (${`0${Math.floor(otpTimer / 60)}`.slice(-2)}:${`0${otpTimer % 60}`.slice(-2)})`
+                : otpSent
+                  ? "Resend"
+                  : "Verify"}
           </button>
         </div>
 
@@ -335,7 +349,7 @@ export default function SignupPage() {
       {/* Success */}
       {message && (
         <div className="flex items-center gap-2 px-4 py-3 bg-white text-sm font-mono font-bold text-green-600">
-           ✓ {message}
+          ✓ {message}
         </div>
       )}
 
