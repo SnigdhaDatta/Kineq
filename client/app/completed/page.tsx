@@ -1,7 +1,8 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Share2 } from "lucide-react";
+import ShareModal from "@/components/ShareModal";
 import { CompletedItem } from "./item";
 import NotificationBar, {
   type NotificationType,
@@ -10,6 +11,7 @@ import tokenSet from "@/lib/tokenset";
 import RouteProtector from "@/middleware/routematcher";
 
 export default function CompletedPage() {
+  const [shareOpen, setShareOpen] = useState(false);
   const [folders, setFolders] = useState<
     { _id: string; name: string; coverImage?: string }[]
   >([]);
@@ -95,6 +97,19 @@ export default function CompletedPage() {
           />
           <Search className="absolute right-3 top-2.5 w-4 h-4 text-gray-400" />
         </div>
+        <button
+          className="flex items-center justify-center bg-white text-black p-2 rounded-full border-2 border-black shadow hover:bg-gray-100 transition-all"
+          style={{ width: 36, height: 36 }}
+          onClick={() => setShareOpen(true)}
+          title="Share"
+        >
+          <Share2 className="w-5 h-5" />
+        </button>
+        <ShareModal
+          url={typeof window !== "undefined" ? window.location.href : ""}
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+        />
       </div>
 
       {/* Feedback messages */}
