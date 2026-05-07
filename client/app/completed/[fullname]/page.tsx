@@ -14,7 +14,9 @@ import {
   MoreVertical,
   CheckCircle2,
   XCircle,
+  Share2,
 } from "lucide-react";
+import ShareModal from "@/components/ShareModal";
 import RouteProtector from "@/middleware/routematcher";
 import tokenSet from "@/lib/tokenset";
 import NotificationBar, {
@@ -28,10 +30,12 @@ interface Drama {
 }
 
 export default function CompletedFolderPage() {
+  const [shareOpen, setShareOpen] = useState(false);
   const [dramas, setDramas] = useState<Drama[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [link, setLink] = useState("");
   const [message, setMessage] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
@@ -216,6 +220,47 @@ export default function CompletedFolderPage() {
     [dramas, normalizedSearch],
   );
 
+  //create link for sharing contents inside folder
+  const createShareLink = useCallback(async () => {
+    const accessToken = getAccessToken();
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/completed/getLink`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: { Authorization: accessToken || "" },
+        },
+      );
+      const newAccessToken = res.headers?.get("Authorization");
+      if (newAccessToken && newAccessToken !== accessToken)
+        tokenSet(newAccessToken);
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error === "REFRESH_EXPIRED") {
+          router.push("/login");
+          return;
+        }
+        setError(data.error || "Failed to fetch completed items");
+        return;
+      }
+      const baseUrl =
+        process.env.NODE_ENV === "production"
+          ? process.env.NEXT_PUBLIC_SITE_URL ||
+            "https://your-production-link.com"
+          : "http://localhost:3000";
+      setLink(
+        `${baseUrl}/share/completed/${folderId}/${data.completedSharedId}`,
+      );
+    } catch (err: unknown) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }, [router, folderId]);
+
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
       <NotificationBar
@@ -231,7 +276,7 @@ export default function CompletedFolderPage() {
           {folderDisplayName}
         </h1>
       </div>
-      {/* Add and Search Bar */}
+      {/* Add, Search, and Share Bar */}
       <div className="flex items-center gap-4 mb-8">
         <button
           className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl font-bold border-2 border-black shadow hover:bg-gray-800 transition-all"
@@ -254,6 +299,24 @@ export default function CompletedFolderPage() {
           />
           <Search className="absolute right-3 top-2.5 w-4 h-4 text-gray-400" />
         </div>
+        <button
+          className="flex items-center justify-center bg-white text-black p-2 rounded-full border-2 border-black shadow hover:bg-gray-100 transition-all"
+          style={{ width: 36, height: 36 }}
+          onClick={() => {
+            createShareLink();
+            setShareOpen(true);
+          }}
+          title="Share"
+        >
+          <Share2 className="w-5 h-5" />
+        </button>
+        <ShareModal
+          url={
+            link || (typeof window !== "undefined" ? window.location.href : "")
+          }
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+        />
       </div>
 
       {/* Feedback messages (only for fetch errors, not edit/delete) */}
