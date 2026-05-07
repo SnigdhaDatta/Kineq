@@ -1,7 +1,8 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Share2 } from "lucide-react";
+import ShareModal from "@/components/ShareModal";
 import { OngoingItem } from "./item";
 import NotificationBar, {
   type NotificationType,
@@ -10,12 +11,14 @@ import tokenSet from "@/lib/tokenset";
 import RouteProtector from "@/middleware/routematcher";
 
 export default function OngoingPage() {
+  const [shareOpen, setShareOpen] = useState(false);
   const [ongoing, setOngoing] = useState<
     Array<{ _id: string; name: string; episode: number; coverImage?: string }>
   >([]);
   const [folders, setFolders] = useState<Array<{ _id: string; name: string }>>(
     [],
   );
+  const [link, setLink] = useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,6 +40,7 @@ export default function OngoingPage() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/completed`, {
         method: "GET",
         credentials: "include",
+        //in get request you usually don’t need to include "Content-Type": "application/json" because you are not sending a request body—only receiving data.
         headers: { Authorization: accessToken || "" },
       });
       const data = await res.json();
@@ -100,6 +104,45 @@ export default function OngoingPage() {
     item.name.toLowerCase().includes(search.toLowerCase()),
   );
 
+  const createShareLink = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    const appData = JSON.parse(localStorage.getItem("kineq") || "{}");
+    const accessToken = appData.accesstoken;
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/ongoing/getLink`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: { Authorization: accessToken || "" },
+        },
+      );
+      const newAccessToken = res.headers?.get("Authorization");
+      if (newAccessToken && newAccessToken !== accessToken)
+        tokenSet(newAccessToken);
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error === "REFRESH_EXPIRED") {
+          router.push("/login");
+          return;
+        }
+        setError(data.error || "Failed to fetch ongoing items");
+        return;
+      }
+      const baseUrl =
+        process.env.NODE_ENV === "production"
+          ? process.env.NEXT_PUBLIC_SITE_URL ||
+            "https://your-production-link.com"
+          : "http://localhost:3000";
+      setLink(`${baseUrl}/share/ongoing/${data.ongoingSharedId}`);
+    } catch (err: unknown) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }, [router]);
+
   return (
     <div className="w-full min-h-screen bg-white px-4 py-8">
       <NotificationBar
@@ -127,6 +170,24 @@ export default function OngoingPage() {
           />
           <Search className="absolute right-3 top-2.5 w-4 h-4 text-gray-400" />
         </div>
+        <button
+          className="flex items-center justify-center bg-white text-black p-2 rounded-full border-2 border-black shadow hover:bg-gray-100 transition-all"
+          style={{ width: 36, height: 36 }}
+          onClick={() => {
+            createShareLink();
+            setShareOpen(true);
+          }}
+          title="Share"
+        >
+          <Share2 className="w-5 h-5" />
+        </button>
+        <ShareModal
+          url={
+            link || (typeof window !== "undefined" ? window.location.href : "")
+          }
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+        />
       </div>
 
       {/* Feedback messages */}
