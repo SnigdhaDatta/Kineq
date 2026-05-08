@@ -132,8 +132,7 @@ export default function OngoingPage() {
       }
       const baseUrl =
         process.env.NODE_ENV === "production"
-          ? process.env.NEXT_PUBLIC_SITE_URL ||
-            "https://your-production-link.com"
+          ? process.env.NEXT_PUBLIC_SITE_URL 
           : "http://localhost:3000";
       setLink(`${baseUrl}/share/ongoing/${data.ongoingSharedId}`);
     } catch (err: unknown) {
