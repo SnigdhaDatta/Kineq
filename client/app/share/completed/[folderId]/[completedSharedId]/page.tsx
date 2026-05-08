@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
-import { Search } from "lucide-react";
 import tokenSet from "@/lib/tokenset";
 
 interface Drama {
@@ -17,8 +16,8 @@ export default function CompletedFolderPublicPage() {
   const [folderName, setFolderName] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const router = useRouter();
   const params = useParams();
+  const router = useRouter();
 
   const { folderId } = params;
   const { completedSharedId } = params;
@@ -66,7 +65,7 @@ export default function CompletedFolderPublicPage() {
     } finally {
       setLoading(false);
     }
-  }, [folderId, completedSharedId]);
+  }, [folderId, completedSharedId, router]);
 
   useEffect(() => {
     fetchDramas();
