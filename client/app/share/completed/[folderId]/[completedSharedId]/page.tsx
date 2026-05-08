@@ -12,7 +12,6 @@ interface Drama {
 
 export default function CompletedFolderPublicPage() {
   const [dramas, setDramas] = useState<Drama[]>([]);
-  const [name, setName] = useState("");
   const [folderName, setFolderName] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -47,7 +46,6 @@ export default function CompletedFolderPublicPage() {
       }
       if (Array.isArray(data)) {
         setDramas(data.filter((item) => item && typeof item.name === "string"));
-        setName("");
         setFolderName("");
       } else {
         setDramas(
@@ -55,7 +53,6 @@ export default function CompletedFolderPublicPage() {
             (item: Drama) => item && typeof item.name === "string",
           ),
         );
-        setName(data.fullname?.split(" ")[0] || "");
         setFolderName(data.foldername || "");
         console.log(folderName);
       }
@@ -78,11 +75,9 @@ export default function CompletedFolderPublicPage() {
           ✦ Completed
         </span>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-black leading-none">
-          {name && folderName
-            ? `${name}'s completed ${folderName} list`
-            : name
-              ? `${name}'s Completed`
-              : folderName || "Completed List"}
+          {folderName
+            ? `Completed ${folderName} List`
+            : "Completed List"}
         </h1>
         <svg className="mt-2" width="60" height="8" viewBox="0 0 60 8">
           <polyline
