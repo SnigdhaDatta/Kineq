@@ -4,7 +4,6 @@ import { useRouter, useParams } from "next/navigation";
 import tokenSet from "@/lib/tokenset";
 
 export default function OngoingPublicPage() {
-  const [name, setName] = useState("");
   const [ongoing, setOngoing] = useState<
     Array<{ _id: string; name: string; episode: number; coverImage?: string }>
   >([]);
@@ -39,10 +38,8 @@ export default function OngoingPublicPage() {
       // Support both array and object response for robustness
       if (Array.isArray(data)) {
         setOngoing(data);
-        setName("");
       } else {
         setOngoing(data.data || []);
-        setName(data.fullname?.split(" ")[0] || "");
       }
     } catch (err: unknown) {
       setError((err as Error).message);
@@ -62,7 +59,7 @@ export default function OngoingPublicPage() {
           ✦ Ongoing
         </span>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-black leading-none">
-          {name ? `${name}'s Ongoing List` : "Current Ongoing List"}
+          {"Currently Watching"}
         </h1>
         <svg className="mt-2" width="60" height="8" viewBox="0 0 60 8">
           <polyline
