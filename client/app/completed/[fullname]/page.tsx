@@ -227,7 +227,7 @@ export default function CompletedFolderPage() {
     setError("");
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/completed/getLink`,
+        `${process.env.NEXT_PUBLIC_API_URL}/completed/${folderId}/contents/getLink`,
         {
           method: "GET",
           credentials: "include",
@@ -302,8 +302,8 @@ export default function CompletedFolderPage() {
         <button
           className="flex items-center justify-center bg-white text-black p-2 rounded-full border-2 border-black shadow hover:bg-gray-100 transition-all"
           style={{ width: 36, height: 36 }}
-          onClick={() => {
-            createShareLink();
+          onClick={async () => {
+            await createShareLink();
             setShareOpen(true);
           }}
           title="Share"
