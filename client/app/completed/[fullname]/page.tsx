@@ -248,8 +248,7 @@ export default function CompletedFolderPage() {
       }
       const baseUrl =
         process.env.NODE_ENV === "production"
-          ? process.env.NEXT_PUBLIC_SITE_URL ||
-            "https://your-production-link.com"
+          ? process.env.NEXT_PUBLIC_SITE_URL 
           : "http://localhost:3000";
       setLink(
         `${baseUrl}/share/completed/${folderId}/${data.completedSharedId}`,
