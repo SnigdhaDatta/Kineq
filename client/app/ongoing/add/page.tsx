@@ -34,7 +34,11 @@ export default function AddOngoingPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        if (data.error === "REFRESH_EXPIRED") router.push("/login");
+        if (data.error === "REFRESH_EXPIRED"){
+          localStorage.removeItem("kineq");
+          router.push("/login");
+          return;
+        }
         const newAccessToken = res.headers?.get("Authorization");
         if (newAccessToken) tokenSet(newAccessToken); // Update token in localStorage if a new one is provided
         setError(data.error || "Failed to add ongoing item");
