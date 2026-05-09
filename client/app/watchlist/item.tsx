@@ -49,6 +49,7 @@ export default function WatchlistItem({
           tokenSet(newAccessToken);
         if (!res.ok) {
           if (data.error === "REFRESH_EXPIRED") {
+            localStorage.removeItem("kineq");
             window.location.href = "/login";
             notify("error", "Session expired. Please log in again.");
             return;
@@ -89,6 +90,7 @@ export default function WatchlistItem({
           tokenSet(newAccessToken);
         if (!res.ok) {
           if (data.error === "REFRESH_EXPIRED") {
+            localStorage.removeItem("kineq");
             window.location.href = "/login";
             notify("error", "Session expired. Please log in again.");
             return;
@@ -128,6 +130,7 @@ export default function WatchlistItem({
           tokenSet(newAccessToken);
         if (!res.ok) {
           if (data.error === "REFRESH_EXPIRED") {
+            localStorage.removeItem("kineq");
             window.location.href = "/login";
             notify("error", "Session expired. Please log in again.");
             return;
