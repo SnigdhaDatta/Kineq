@@ -47,6 +47,7 @@ export default function WatchlistPage() {
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
+          localStorage.removeItem("kineq");
           router.push("/login");
           return;
         }
@@ -90,6 +91,7 @@ export default function WatchlistPage() {
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
+          localStorage.removeItem("kineq");
           router.push("/login");
           return;
         }
@@ -121,6 +123,7 @@ export default function WatchlistPage() {
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "REFRESH_EXPIRED") {
+          localStorage.removeItem("kineq");
           router.push("/login");
           return;
         }
