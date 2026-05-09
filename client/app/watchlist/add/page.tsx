@@ -34,6 +34,7 @@ export default function AddWatchlistPage() {
     if (!res.ok) {
       const data = await res.json();
       if (data.error === "REFRESH_EXPIRED") {
+        localStorage.removeItem("kineq");
         router.push("/login");
         return;
       }
