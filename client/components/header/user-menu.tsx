@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 export function UserMenu() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentTab, setCurrentTab] = useState<string>("watchlist");
+  const [currentTab, setCurrentTab] = useState<string>("home");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -50,8 +50,9 @@ export function UserMenu() {
 
       const path = window.location.pathname;
       if (path.startsWith("/completed")) setCurrentTab("completed");
+      else if (path.startsWith("/watchlist")) setCurrentTab("watchlist");
       else if (path.startsWith("/ongoing")) setCurrentTab("ongoing");
-      else setCurrentTab("watchlist");
+      else setCurrentTab("home");
 
       if (!validSession) {
         setDropdownOpen(false);
@@ -84,7 +85,8 @@ export function UserMenu() {
   function handleTabChange(tab: string) {
     setCurrentTab(tab);
     setDropdownOpen(false);
-    router.push(`/${tab}`);
+    if(tab === "home") router.push(`/`);
+    else router.push(`/${tab}`);
   }
 
   async function handleLogout() {
@@ -130,7 +132,7 @@ export function UserMenu() {
           </button>
           {dropdownOpen && (
             <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-40 bg-white border-2 border-black rounded-xl shadow-lg z-10">
-              {["watchlist", "completed", "ongoing"]
+              {["watchlist", "completed", "ongoing","home"]
                 .filter((tab) => tab !== currentTab)
                 .map((tab) => (
                   <div
