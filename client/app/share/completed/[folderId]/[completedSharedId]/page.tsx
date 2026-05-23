@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import tokenSet from "@/lib/tokenset";
+import SharedFolderJoinButton from "@/components/SharedFolderJoinButton";
 
 interface Drama {
   _id: string;
@@ -75,9 +76,7 @@ export default function CompletedFolderPublicPage() {
           ✦ Completed
         </span>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-black leading-none">
-          {folderName
-            ? `Completed ${folderName} List`
-            : "Completed List"}
+          {folderName ? `Completed ${folderName} List` : "Completed List"}
         </h1>
         <svg className="mt-2" width="60" height="8" viewBox="0 0 60 8">
           <polyline
@@ -143,6 +142,8 @@ export default function CompletedFolderPublicPage() {
           </div>
         </div>
       )}
+
+      <SharedFolderJoinButton />
     </div>
   );
 }
