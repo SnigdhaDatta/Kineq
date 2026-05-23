@@ -273,3 +273,27 @@
     50% 50% no-repeat;
   background-size: 100%;
 }
+
+
+@keyframes spin-glow {
+  0% { --glow-angle: 0deg; }
+  100% { --glow-angle: 360deg; }
+}
+
+@property --glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.glow-animate {
+  animation: spin-glow 3s linear infinite;
+  background: conic-gradient(
+    from var(--glow-angle) at 50% 50%,
+    #f43f5e,
+    #3b82f6,
+    #10b981,
+    #facc15,
+    #f43f5e
+  );
+}
