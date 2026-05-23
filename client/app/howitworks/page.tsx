@@ -12,14 +12,14 @@ const steps = [
     number: "02",
     title: "Add Titles to Your List",
     description:
-      "Search for any drama, anime or show and drop it into Watchlist, Ongoing, or Completed.",
+      "Add any drama, anime or show to your list and move it between Watchlist, Ongoing, or Completed.",
     icon: "📋",
   },
   {
     number: "03",
     title: "Organise Your Way",
     description:
-      "Create custom folders inside Completed. Sort, label, and structure your binge history your way.",
+      "Create custom folders inside Completed. Edit , Delete them at any time you want .",
     icon: "📁",
   },
   {
