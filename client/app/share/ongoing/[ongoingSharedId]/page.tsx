@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import tokenSet from "@/lib/tokenset";
+import SharedFolderJoinButton from "@/components/SharedFolderJoinButton";
 
 export default function OngoingPublicPage() {
   const [ongoing, setOngoing] = useState<
@@ -108,6 +109,8 @@ export default function OngoingPublicPage() {
           </div>
         </div>
       )}
+
+      <SharedFolderJoinButton />
     </div>
   );
 }
