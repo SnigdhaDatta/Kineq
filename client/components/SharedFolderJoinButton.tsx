@@ -8,7 +8,7 @@ export default function SharedFolderJoinButton() {
     <div className="fixed bottom-4 left-1/2 z-[9999] -translate-x-1/2 sm:bottom-6">
       <Link
         href="/signup"
-        className="group relative inline-flex items-center gap-2 rounded-full px-[1.5px] py-[1.5px] text-sm text-white font-bold font-mono tracking-tight text-black transition-all duration-200 hover:-translate-y-1 active:translate-y-0"
+        className="group relative inline-flex items-center gap-2 rounded-full px-[1.5px] py-[1.5px] text-sm text-neutral-50 font-bold font-mono tracking-tight text-black transition-all duration-200 hover:-translate-y-1 active:translate-y-0"
       >
         <span className="glow-animate absolute inset-0 rounded-full blur-[5px] opacity-70" />
         <span className="glow-animate absolute inset-0 rounded-full p-[1.5px]" />
