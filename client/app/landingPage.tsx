@@ -269,9 +269,13 @@ export default function LandingPage() {
           style={{ animationDelay: "0.85s", opacity: 0 }}
         >
           <Link href="/signup">
-            <button className="btn-press flex items-center gap-2 bg-black text-white text-base font-bold tracking-wide px-7 py-3.5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_#555]">
-              Get Started <ArrowUpRight className="w-5 h-5" />
-            </button>
+            <div className="relative inline-block">
+              <span className="glow-animate absolute -inset-0.5 rounded-2xl blur-[6px] opacity-75" />
+              <span className="glow-animate absolute -inset-0.5 rounded-2xl p-[1.5px]" />
+              <button className="btn-press relative flex items-center gap-2 bg-black text-white text-base font-bold tracking-wide px-8 py-4 rounded-2xl border-0 ">
+                Get Started <ArrowUpRight className="w-5 h-5" />
+              </button>
+            </div>
           </Link>
           <Link href="/howitworks">
             <button className="btn-press flex items-center gap-2 bg-white text-black text-base font-bold tracking-wide px-7 py-3.5 rounded-2xl border-2 border-black shadow-[4px_4px_0px_#000]">
@@ -691,9 +695,13 @@ export default function LandingPage() {
             Free. Always.
           </p>
           <Link href="/signup">
-            <button className="btn-press flex items-center justify-center gap-2 bg-black text-white text-base font-bold tracking-wide px-8 py-4 rounded-2xl border-2 border-black shadow-[4px_4px_0px_#555] mx-auto">
-              Get Started — it&apos;s free <ArrowUpRight className="w-5 h-5" />
-            </button>
+            <div className="relative inline-block">
+              <span className="glow-animate absolute -inset-0.5 rounded-2xl blur-[6px] opacity-75" />
+              <span className="glow-animate absolute -inset-0.5 rounded-2xl p-[1.5px]" />
+              <button className="btn-press relative flex items-center gap-2 bg-black text-white text-base font-bold tracking-wide px-8 py-4 rounded-2xl border-0 ">
+                Get Started <ArrowUpRight className="w-5 h-5" />
+              </button>
+            </div>{" "}
           </Link>
           <div className="flex items-center justify-center gap-6 mt-8 text-xs font-mono text-gray-400">
             {["No credit card", "No ads", "No BS"].map((t) => (
