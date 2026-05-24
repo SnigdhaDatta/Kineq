@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Head from "next/head";
+import Script from "next/script";
 import "./global.css";
 import Footer from "../components/footer";
 import Header from "../components/header";
@@ -36,28 +37,6 @@ export default function RootLayout({
       className="scroll-smooth hydrated"
     >
       <Head>
-        {/* OneSignal SDK script */}
-        <script
-          src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-          defer
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.OneSignalDeferred = window.OneSignalDeferred || [];
-              OneSignalDeferred.push(async function(OneSignal) {
-                await OneSignal.init({
-                  appId: "e15ad3e1-b157-4e95-985d-4816a48d2e56",
-                  safari_web_id: "web.onesignal.auto.0e007fdd-4c29-4efe-85fd-d9ae8478b7ea",
-                  allowLocalhostAsSecureOrigin: true,
-                  notifyButton: {
-                    enable: true,
-                  },
-                });
-              });
-            `,
-          }}
-        />
         {/* Script for Structured Data: WebSite & Organization */}
         <script
           type="application/ld+json"
@@ -112,6 +91,38 @@ export default function RootLayout({
         />
         <meta property="twitter:image" content="/og-image.png" />
       </Head>
+      <Script
+        src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+        strategy="afterInteractive"
+      />
+      <Script id="onesignal-bootstrap" strategy="afterInteractive">
+        {`
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          console.info("[OneSignal] bootstrap queued", {
+            origin: window.location.origin,
+          });
+          OneSignalDeferred.push(async function(OneSignal) {
+            console.info("[OneSignal] init starting");
+            try {
+              await OneSignal.init({
+                appId: "e15ad3e1-b157-4e95-985d-4816a48d2e56",
+                safari_web_id: "web.onesignal.auto.0e007fdd-4c29-4efe-85fd-d9ae8478b7ea",
+                allowLocalhostAsSecureOrigin: true,
+                notifyButton: {
+                  enable: true,
+                },
+              });
+              console.info("[OneSignal] init complete", {
+                permission: OneSignal.Notifications.permission,
+                subscribed: OneSignal.User.PushSubscription.optedIn,
+                subscriptionId: OneSignal.User.PushSubscription.id,
+              });
+            } catch (error) {
+              console.error("[OneSignal] init failed", error);
+            }
+          });
+        `}
+      </Script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black `}
       >
