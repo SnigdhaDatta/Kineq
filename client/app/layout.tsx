@@ -6,6 +6,7 @@ import Footer from "../components/footer";
 import Header from "../components/header";
 
 import ChatWidget from "../components/ChatWidget";
+import NotificationOptInPrompt from "../components/NotificationOptInPrompt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +30,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className="scroll-smooth hydrated">
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className="scroll-smooth hydrated"
+    >
       <Head>
-        {/* Structured Data: WebSite & Organization */}
+        {/* OneSignal SDK script */}
+        <script
+          src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+          defer
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.OneSignalDeferred = window.OneSignalDeferred || [];
+              OneSignalDeferred.push(async function(OneSignal) {
+                await OneSignal.init({
+                  appId: process.env.ONESIGNAL_APP_ID,
+                  safari_web_id: process.env.ONESIGNAL_SAFARI_WEB_ID,
+                  allowLocalhostAsSecureOrigin: true,
+                  notifyButton: {
+                    enable: true,
+                  },
+                });
+              });
+            `,
+          }}
+        />
+        {/* Script for Structured Data: WebSite & Organization */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -91,6 +118,7 @@ export default function RootLayout({
         <Header />
         <main className="mx-auto min-h-screen">{children}</main>
         <Footer />
+        <NotificationOptInPrompt />
         <ChatWidget />
       </body>
     </html>
