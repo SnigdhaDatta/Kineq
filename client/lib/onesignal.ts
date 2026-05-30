@@ -41,6 +41,22 @@ export function getOneSignalHelperScript(apiUrl: string) {
 
       window.OneSignalDeferred = window.OneSignalDeferred || [];
 
+      function getStoredToken() {
+        try {
+          const appData = JSON.parse(localStorage.getItem('kineq') || '{}');
+          return appData?.accesstoken || null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function syncBellVisibility() {
+        try {
+          const hasToken = !!getStoredToken();
+          document.body.classList.toggle('hide-onesignal-bell', !hasToken);
+        } catch (e) {}
+      }
+
       function decodeJwtEmail(token) {
         try {
           if (!token || typeof token !== 'string') return null;
@@ -80,8 +96,8 @@ export function getOneSignalHelperScript(apiUrl: string) {
           try {
             const appData = JSON.parse(localStorage.getItem('kineq') || '{}');
             const token = appData?.accesstoken || null;
+            syncBellVisibility();
             if (!token) {
-              try{ document.body.classList.add('hide-onesignal-bell'); }catch(e){}
               OneSignalDeferred.push(async function(OneSignal){
                 try{
                   if (OneSignal.logout) {
@@ -94,7 +110,6 @@ export function getOneSignalHelperScript(apiUrl: string) {
               return;
             }
 
-            try{ document.body.classList.remove('hide-onesignal-bell'); }catch(e){}
             const externalId = decodeJwtEmail(token) || appData?.user?.email || appData?.email || null;
             OneSignalDeferred.push(async function(OneSignal){
               try{
@@ -134,7 +149,7 @@ export function getOneSignalHelperScript(apiUrl: string) {
         });
       } catch (e) {}
 
-      try{ document.body.classList.add('hide-onesignal-bell'); }catch(e){}
+      syncBellVisibility();
     })();
   `;
 }
