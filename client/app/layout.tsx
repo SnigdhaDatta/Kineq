@@ -5,9 +5,13 @@ import Script from "next/script";
 import "./global.css";
 import Footer from "../components/footer";
 import Header from "../components/header";
+import {
+  getOneSignalBootstrapScript,
+  getOneSignalHelperScript,
+} from "../lib/onesignal";
 
 import ChatWidget from "../components/ChatWidget";
-import NotificationOptInPrompt from "../components/NotificationOptInPrompt";
+import NotificationReminder from "../components/NotificationReminder";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -96,32 +100,12 @@ export default function RootLayout({
         strategy="afterInteractive"
       />
       <Script id="onesignal-bootstrap" strategy="afterInteractive">
-        {`
-          window.OneSignalDeferred = window.OneSignalDeferred || [];
-          console.info("[OneSignal] bootstrap queued", {
-            origin: window.location.origin,
-          });
-          OneSignalDeferred.push(async function(OneSignal) {
-            console.info("[OneSignal] init starting");
-            try {
-              await OneSignal.init({
-                appId: "e15ad3e1-b157-4e95-985d-4816a48d2e56",
-                safari_web_id: "web.onesignal.auto.0e007fdd-4c29-4efe-85fd-d9ae8478b7ea",
-                allowLocalhostAsSecureOrigin: true,
-                notifyButton: {
-                  enable: true,
-                },
-              });
-              console.info("[OneSignal] init complete", {
-                permission: OneSignal.Notifications.permission,
-                subscribed: OneSignal.User.PushSubscription.optedIn,
-                subscriptionId: OneSignal.User.PushSubscription.id,
-              });
-            } catch (error) {
-              console.error("[OneSignal] init failed", error);
-            }
-          });
-        `}
+        {getOneSignalBootstrapScript()}
+      </Script>
+      <Script id="onesignal-helpers" strategy="afterInteractive">
+        {getOneSignalHelperScript(
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
+        )}
       </Script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black `}
@@ -129,7 +113,7 @@ export default function RootLayout({
         <Header />
         <main className="mx-auto min-h-screen">{children}</main>
         <Footer />
-        <NotificationOptInPrompt />
+        <NotificationReminder />
         <ChatWidget />
       </body>
     </html>
