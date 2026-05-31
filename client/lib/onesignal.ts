@@ -57,6 +57,34 @@ export function getOneSignalHelperScript(apiUrl: string) {
         } catch (e) {}
       }
 
+      function getExternalIdFromToken() {
+        try {
+          const appData = JSON.parse(localStorage.getItem('kineq') || '{}');
+          const token = appData?.accesstoken || null;
+          return decodeJwtEmail(token) || appData?.user?.email || appData?.email || null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      async function linkOneSignalSession(OneSignal) {
+        try {
+          const externalId = getExternalIdFromToken();
+          if (!externalId) return;
+
+          if (OneSignal.login) {
+            await OneSignal.login(externalId);
+          } else if (OneSignal.setExternalUserId) {
+            await OneSignal.setExternalUserId(externalId);
+          }
+
+          const currentOptedIn = !!OneSignal?.User?.PushSubscription?.optedIn;
+          await syncPushNotification(currentOptedIn);
+        } catch (err) {
+          console.error('[OneSignal] session link failed', err);
+        }
+      }
+
       function decodeJwtEmail(token) {
         try {
           if (!token || typeof token !== 'string') return null;
@@ -110,22 +138,18 @@ export function getOneSignalHelperScript(apiUrl: string) {
               return;
             }
 
-            const externalId = decodeJwtEmail(token) || appData?.user?.email || appData?.email || null;
             OneSignalDeferred.push(async function(OneSignal){
-              try{
-                if (OneSignal.login) {
-                  await OneSignal.login(externalId);
-                } else if (OneSignal.setExternalUserId) {
-                  await OneSignal.setExternalUserId(externalId);
-                }
-
-                const currentOptedIn = !!OneSignal?.User?.PushSubscription?.optedIn;
-                await syncPushNotification(currentOptedIn);
-              }catch(err){ console.error('[OneSignal] show error', err); }
+              await linkOneSignalSession(OneSignal);
             });
           } catch (err) {
             console.warn('authChanged handler failed', err);
           }
+        });
+      } catch (e) {}
+
+      try {
+        OneSignalDeferred.push(async function(OneSignal){
+          await linkOneSignalSession(OneSignal);
         });
       } catch (e) {}
 
