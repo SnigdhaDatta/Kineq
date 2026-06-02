@@ -1,6 +1,6 @@
 # Kineq (Currently 34 users)
 
-Kineq is a full-stack web application to track shows/movies across three personal states and  with features:
+Kineq is a full-stack web application with LLM-powered semantic search (via Tavily) to track shows/movies across three personal states. Features:
 
 - watchlist
 - ongoing
@@ -12,7 +12,8 @@ Kineq is a full-stack web application to track shows/movies across three persona
 The project is split into:
 
 - `client/`: Next.js frontend (deployed on Vercel)
-- `backend/`: Express + MongoDB + Redis API (Dockerized, deployable on AWS EC2)
+- `backend/`: Express + MongoDB + Redis API + Tavily Search(LLM) (Dockerized, deployable on AWS EC2)
+- `backend/`: Express + MongoDB + Redis API + Tavily Search (LLM-powered search) (Dockerized, deployable on AWS EC2)
 
 ## Quick Links
 
@@ -28,6 +29,7 @@ Kineq/
 		lib/
 	backend/
 		controllers/
+		cron/
 		middlewares/
 		models/
 		routes/
