@@ -4,11 +4,13 @@ import {
   ArrowUpRight,
   ClipboardList,
   FolderOpen,
+  MessageCircleMore,
   Sparkles,
   Play,
   CheckCircle2,
   Star,
   BookOpen,
+  Share2,
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
@@ -457,6 +459,22 @@ export default function LandingPage() {
                 "Easy to use — just add your watchlist items and manage them",
               dot: "■",
               delay: "0.4s",
+            },
+            {
+              icon: <MessageCircleMore className="w-8 h-8" />,
+              tag: "04",
+              title:
+                "Chat with the built-in chatbot for quick movies/series recommendations and other help",
+              dot: "✦",
+              delay: "0.55s",
+            },
+            {
+              icon: <Share2 className="w-8 h-8" />,
+              tag: "05",
+              title:
+                "Share your watchlist, ongoing list and completed lists through link on social media platforms",
+              dot: "↗",
+              delay: "0.7s",
             },
           ].map(({ icon, tag, title, dot, delay }) => (
             <li key={tag} className="flex-1 group">
