@@ -85,17 +85,33 @@ export default function HowItWorks() {
             </div>
             {/* Video area */}
             <div
-              className="relative bg-black"
-              style={{ aspectRatio: "14/8", width: "100%", background: "#000" }}
+              className="relative bg-black rounded-b-2xl"
+              style={{ width: "100%", background: "#000" }}
             >
-              <iframe
-                className="w-full h-full object-cover"
-                src="https://drive.google.com/file/d/1m3s6slNjSMEMvcvQzgspVY3n6kSd23NXm4NvG468wxQ/preview?autoplay=1"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-                title="How it works demo"
-                style={{ width: "100%", height: "100%", border: 0 }}
-              />
+              <div
+                style={{
+                  position: "relative",
+                  paddingBottom: "calc(56.25%)",
+                  height: 0,
+                  width: "100%",
+                }}
+              >
+                <iframe
+                  src="https://demo.arcade.software/video/ZF6VTM5WPrqviTARvRj7?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true&autoplay=true"
+                  frameBorder="0"
+                  loading="lazy"
+                  allowFullScreen
+                  allow="clipboard-write; autoplay"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    colorScheme: "light",
+                  }}
+                />
+              </div>
               <div className="absolute top-3 right-3 bg-black text-white font-mono text-[10px] tracking-widest uppercase px-3 py-1 rounded-full flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block animate-pulse" />
                 Demo
