@@ -21,7 +21,15 @@ export default function Footer() {
             </div>
           </Link>
           <span className="text-xs text-gray-400 sm:ml-4">
-            © {new Date().getFullYear()} Snigdha Datta
+            © {new Date().getFullYear()}{" "}
+            <a
+              href="https://github.com/SnigdhaDatta"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-200 transition-colors"
+            >
+              Snigdha Datta
+            </a>
           </span>
         </div>
         <div className="flex gap-4 flex-wrap justify-center text-sm">
