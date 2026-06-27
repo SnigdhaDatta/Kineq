@@ -1,7 +1,31 @@
-# Kineq (Currently 34 users)
+<div align="center">
 
-<div style="font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif; border: 1px solid rgb(224, 224, 224); border-radius: 12px; padding: 20px; max-width: 500px; background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.05) 0px 2px 8px;"><div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;"><img alt="Kineq" src="https://ph-files.imgix.net/9898312c-0f50-4be6-a0a4-9e2dc8d1cb5e.png?auto=compress,format&amp;codec=mozjpeg&amp;cs=strip&amp;fit=crop&amp;h=80&amp;w=80" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover; flex-shrink: 0;"><div style="flex: 1 1 0%; min-width: 0px;"><h3 style="margin: 0px; font-size: 18px; font-weight: 600; color: rgb(26, 26, 26); line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Kineq</h3><p style="margin: 4px 0px 0px; font-size: 14px; color: rgb(102, 102, 102); line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">Your AI-Powered Watchlist Organizer Tracker</p></div></div><a href="https://www.producthunt.com/products/kineq?embed=true&amp;utm_source=embed&amp;utm_medium=post_embed" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 4px; margin-top: 12px; padding: 8px 16px; background: rgb(255, 97, 84); color: rgb(255, 255, 255); text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">Check it out on Product Hunt →</a></div>
+# <img src="https://ph-files.imgix.net/9898312c-0f50-4be6-a0a4-9e2dc8d1cb5e.png?auto=compress,format&amp;codec=mozjpeg&amp;cs=strip&amp;fit=crop&amp;h=80&amp;w=80" width="38" height="38" style="vertical-align: middle; border-radius: 8px; margin-right: 4px;" alt="Kineq Logo"> Kineq
+ 
+**Your AI-Powered Tracker Cum Organizer**
+
+<img src="https://img.shields.io/badge/version-1.0.0-brightgreen?style=for-the-badge" height="28" style="vertical-align: middle;"> <img src="https://img.shields.io/badge/users-34-red?style=for-the-badge" height="28" style="vertical-align: middle;"> <a href="https://www.producthunt.com/products/kineq?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-kineq" target="_blank" rel="noopener noreferrer"><img alt="Kineq - Your AI-Powered Watchlist Organizer Tracker | Product Hunt" height="28" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1171559&amp;theme=light&amp;t=1782559757484" style="vertical-align: middle;"></a>
+
+</div>
 </br>
+Kineq is a full-stack web application with LLM-powered semantic search (via Tavily) to track shows/movies across three personal states with Features:
+
+- watchlist
+- ongoing
+- completed (folder-based)
+- link sharing (share folders/lists via unique public links)
+- scheduled automated reminder in form of emails and web-push notifications
+- chatbot (for searching about movies/series/animes information, getting recommendations, etc)
+
+## Why Kineq
+
+Kineq exists to keep a user's watch history, current progress, and future picks in one place instead of spreading them across notes, bookmarks, and streaming apps.
+
+- It gives a single workflow for tracking watchlist, ongoing, and completed items.
+- It makes sharing curated lists and folders simple with unique public links.
+- It reduces forgotten shows and movies by using reminder emails and web-push notifications.
+- It helps users discover what to watch next with chatbot-based search and recommendations.
+- It keeps the experience fast with Redis-backed reads and clean data updates in MongoDB.
 
 ## Architecture Visualizer
 
@@ -50,6 +74,10 @@ flowchart LR
 	end
 ```
 
+## Demo (Click the below image)
+
+[![Manage Your Anime, K-dramas, C-dramas, Movies & More With Kineq](https://img.youtube.com/vi/aVinODlbkMQ/maxresdefault.jpg)](https://youtu.be/aVinODlbkMQ)
+
 Backend behavior in plain terms:
 
 - GET requests for watchlist, ongoing, completed, and shared views check Redis first, then fall back to MongoDB on cache miss.
@@ -57,15 +85,6 @@ Backend behavior in plain terms:
 - OTP verification uses Redis as a short-lived store for `otp:<email>` and deletes the key after successful verification or expiry.
 - Login and signup issue JWT access tokens plus an HTTP-only refresh cookie.
 - Chatbot requests go through the backend and use Tavily, while reminder jobs run from cron and trigger mail / web-push notifications.
-
-Kineq is a full-stack web application with LLM-powered semantic search (via Tavily) to track shows/movies across three personal states. Features:
-
-- watchlist
-- ongoing
-- completed (folder-based)
-- link sharing (share folders/lists via unique public links)
-- scheduled automated reminder in form of emails and web-push notifications
-- chatbot (for searching about movies/series/animes information, getting recommendations, etc)
 
 The project is split into:
 
@@ -114,13 +133,32 @@ npm install
 npm run dev
 ```
 
+## Tech Stack
+
+**Frontend:** `Next.js 15` • `React 19` • `TypeScript` • `Tailwind CSS 4` • `lucide-react` • `clsx` • `tailwind-merge`
+
+**Backend:** `Node.js` • `Express 5` • `MongoDB` • `Mongoose` • `Redis` • `JWT` • `bcrypt` • `cookie-parser` • `cors` • `node-cron` • `Resend` • `Tavily Core`
+
+**Dev / Tooling:** `Nodemon` • `ESLint` • `Turbopack` • `dotenv`
+
 ## Deployment Overview
 
-- Frontend: Vercel
-- Backend image: GitHub Actions -> Docker Hub
-- Backend runtime: AWS EC2 via Docker Compose
-
-The backend CI/CD flow uses SHA-based image tags for immutable deployments and optionally `latest` for convenience.
+<table>
+  <thead>
+    <tr>
+      <th align="left" style="width: 25%; min-width: 140px;">Frontend</th>
+      <th align="left" style="width: 35%; min-width: 200px;">Backend Image</th>
+      <th align="left" style="width: 40%; min-width: 220px;">Backend Runtime</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Vercel</td>
+      <td>GitHub Actions<br>Docker Hub</td>
+      <td>AWS EC2<br>Docker Compose</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Notes
 
