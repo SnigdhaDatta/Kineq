@@ -76,7 +76,7 @@ flowchart LR
 
 ## Demo (Click the below image)
 
-[![Manage Your Anime, K-dramas, C-dramas, Movies & More With Kineq](https://img.youtube.com/vi/aVinODlbkMQ/maxresdefault.jpg)](https://youtu.be/aVinODlbkMQ)
+[![Manage Your Anime, K-dramas, C-dramas, Movies & More With Kineq](/client/public/images/mockup.png)](https://youtu.be/aVinODlbkMQ)
 
 Backend behavior in plain terms:
 
