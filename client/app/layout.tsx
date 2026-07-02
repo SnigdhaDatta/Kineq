@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Head from "next/head";
 import Script from "next/script";
 import "./global.css";
-import Footer from "../components/footer";
+
 import Header from "../components/header";
+import Footer from "../components/footer";
+import ChatWidget from "../components/ChatWidget";
+import NotificationReminder from "../components/NotificationReminder";
+
 import {
   getOneSignalBootstrapScript,
   getOneSignalHelperScript,
 } from "../lib/onesignal";
-
-import ChatWidget from "../components/ChatWidget";
-import NotificationReminder from "../components/NotificationReminder";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +24,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://kin-eq.snowpie.me"),
+
   title: "Kineq",
+
   description:
-    "Organize and track your anything you watch from Asian dramas , anime watchlist to hollywood shows  in your own creative way! Take full control over your watchlist with Kineq.",
+    "Organize and track everything you watch—from Asian dramas and anime to Hollywood shows—in your own creative way. Take full control of your watchlists with Kineq.",
+
+  openGraph: {
+    title: "Kineq",
+    description:
+      "Organize and track everything you watch—from Asian dramas and anime to Hollywood shows—in your own creative way. Take full control of your watchlists with Kineq.",
+    url: "/",
+    siteName: "Kineq",
+    type: "website",
+    images: [
+      {
+        url: "/images/mockup.png",
+        width: 1200,
+        height: 630,
+        alt: "Kineq Website Dashboard Mockup",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Kineq",
+    description:
+      "Organize and track everything you watch—from Asian dramas and anime to Hollywood shows—in your own creative way. Take full control of your watchlists with Kineq.",
+    images: ["/images/mockup.png"],
+  },
 };
 
 export default function RootLayout({
@@ -40,21 +68,20 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className="scroll-smooth hydrated"
     >
-      <Head>
-        {/* Script for Structured Data: WebSite & Organization */}
-        <script
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black`}
+      >
+        {/* Structured Data */}
+        <Script
+          id="structured-data"
           type="application/ld+json"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "Kineq",
               url: "https://kin-eq.snowpie.me/",
-              potentialAction: {
-                "@type": "SearchAction",
-                target: "https://kin-eq.snowpie.me/?q={search_term_string}",
-                "query-input": "required name=search_term_string",
-              },
               publisher: {
                 "@type": "Organization",
                 name: "Kineq",
@@ -67,53 +94,31 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* Primary Meta Tags */}
-        <title>Kineq</title>
-        <meta name="title" content="Kineq" />
-        <meta
-          name="description"
-          content="Organize and track anything you watch from Asian dramas, anime watchlist to Hollywood shows in your own creative way! Take full control over your watchlist with Kineq."
+
+        {/* OneSignal SDK */}
+        <Script
+          src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+          strategy="afterInteractive"
         />
 
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://kin-eq.snowpie.me/" />
-        <meta property="og:title" content="Kineq" />
-        <meta
-          property="og:description"
-          content="Organize and track anything you watch from Asian dramas, anime watchlist to Hollywood shows in your own creative way! Take full control over your watchlist with Kineq."
-        />
-        <meta property="og:image" content="/og-image.png" />
+        <Script id="onesignal-bootstrap" strategy="afterInteractive">
+          {getOneSignalBootstrapScript()}
+        </Script>
 
-        {/* Twitter */}
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://kin-eq.snowpie.me/" />
-        <meta property="twitter:title" content="Kineq" />
-        <meta
-          property="twitter:description"
-          content="Organize and track anything you watch from Asian dramas, anime watchlist to Hollywood shows in your own creative way! Take full control over your watchlist with Kineq."
-        />
-        <meta property="twitter:image" content="/og-image.png" />
-      </Head>
-      <Script
-        src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-        strategy="afterInteractive"
-      />
-      <Script id="onesignal-bootstrap" strategy="afterInteractive">
-        {getOneSignalBootstrapScript()}
-      </Script>
-      <Script id="onesignal-helpers" strategy="afterInteractive">
-        {getOneSignalHelperScript(
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
-        )}
-      </Script>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-black `}
-      >
+        <Script id="onesignal-helpers" strategy="afterInteractive">
+          {getOneSignalHelperScript(
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
+          )}
+        </Script>
+
         <Header />
+
         <main className="mx-auto min-h-screen">{children}</main>
+
         <Footer />
+
         <NotificationReminder />
+
         <ChatWidget />
       </body>
     </html>
