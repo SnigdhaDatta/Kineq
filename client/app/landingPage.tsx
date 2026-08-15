@@ -656,7 +656,7 @@ export default function LandingPage() {
               },
               {
                 q: "Can I add both anime and K-dramas?",
-                a: "Absolutely. Kineq supports any Asian drama or anime — K-dramas, C-dramas, J-dramas, anime series, movies, you name it.",
+                a: "Absolutely. Kineq supports series, animes, and movies, you just name it and manually track it.",
                 delay: "0.35s",
               },
               {
@@ -666,7 +666,7 @@ export default function LandingPage() {
               },
               {
                 q: "Can I share my watchlist with friends?",
-                a: "Sharing features are coming soon. For now your lists are private and personal — just the way you like it.",
+                a: "Yes! You can share your watchlist, ongoing list, and completed lists through a link on any social media platform.",
                 delay: "0.55s",
               },
             ].map(({ q, a, delay }) => (
