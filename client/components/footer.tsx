@@ -60,7 +60,7 @@ export default function Footer() {
         </div>
         <div className="text-center sm:text-right">
           <Link
-            href="mailto:hello@kineq.app"
+            href="mailto:hello@kin-eq.snowpie.me.app"
             className="text-white hover:underline text-sm font-semibold"
           >
             Contact
