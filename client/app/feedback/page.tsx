@@ -19,7 +19,7 @@ export default function FeedbackPage() {
 
       <div className="mt-8 flex flex-wrap gap-4">
         <a
-          href="mailto:hello@kineq.app?subject=Kineq%20Feedback"
+          href="mailto:support@kin-eq.snowpie.me?subject=Kineq%20Feedback"
           className="rounded-2xl border-2 border-black bg-black px-5 py-4 font-bold text-white shadow-[4px_4px_0px_#555] transition-transform hover:translate-x-[2px] hover:translate-y-[2px]"
         >
           Email feedback
