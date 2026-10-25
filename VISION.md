@@ -1,6 +1,6 @@
 # Kineq — My Product & Engineering Story
 
-> *This is not a project description. This is the story of how I think.*
+> _This is not a project description. This is the story of how I think._
 
 ---
 
@@ -18,7 +18,7 @@ But here's the honest truth — I also built Kineq because I wanted to stop bein
 
 Kineq is built around one core insight: **watching a show has phases**. You want to watch something. Then you're watching it. Then you finish it. That's a lifecycle — not a list with a status column.
 
-So I made them three separate flows. Watchlist, Ongoing, Completed. Each with its own behaviour, its own UI, its own API. That decision meant more work, but it also meant the app felt *intentional* to use.
+So I made them three separate flows. Watchlist, Ongoing, Completed. Each with its own behaviour, its own UI, its own API. That decision meant more work, but it also meant the app felt _intentional_ to use.
 
 **The Completed tab** was where I took the biggest product risk — I made it folder-based. You can create folders named anything: "Anime", "K-drama", "Rewatched with mum", whatever. It turns the completed list from a graveyard into a curated collection. That detail mattered to me personally, and it's the feature users comment on most.
 
@@ -59,14 +59,20 @@ I used Redis to cache shared list responses. The pattern was correct — check R
 But I also added the `NX` flag:
 
 ```js
-await redisClient.set(`ongoingShared:${id}`, JSON.stringify(data), "EX", 180, "NX");
+await redisClient.set(
+  `ongoingShared:${id}`,
+  JSON.stringify(data),
+  "EX",
+  180,
+  "NX",
+);
 ```
 
 `NX` means "only set if key doesn't already exist." I added it without thinking too hard — it sounded like a safe default. In practice it meant: once a key is cached, it can never be overwritten. Even after a user adds a new item, the next request reads the stale cache until TTL expires.
 
 The real fix wasn't just removing `NX`. It was realising I had only wired cache invalidation on edit and delete routes, not on add routes. So even without `NX`, a new item would silently not appear in a shared view for up to 3 minutes. I had to add `redisClient.del()` calls on every add route too.
 
-Cache invalidation is genuinely hard. Not because the code is complex — it's one line. Because knowing *when* to call it requires thinking about every mutation path that could affect a read.
+Cache invalidation is genuinely hard. Not because the code is complex — it's one line. Because knowing _when_ to call it requires thinking about every mutation path that could affect a read.
 
 ---
 
@@ -90,7 +96,7 @@ The fix was replacing the `for` loop with `Promise.allSettled()` + `.map()`:
 
 ```js
 const results = await Promise.allSettled(
-  users.map(async (currentUser) => sendMailToUser(currentUser))
+  users.map(async (currentUser) => sendMailToUser(currentUser)),
 );
 ```
 
@@ -124,12 +130,14 @@ Even after fixing cookies, there was another issue: the backend was returning a 
 The problem was in the CORS configuration. By default, browsers only expose a small set of response headers to JavaScript. Custom headers like `Authorization` have to be explicitly whitelisted:
 
 ```js
-app.use(cors({
-  exposedHeaders: ["Authorization"], // ← this was missing
-}));
+app.use(
+  cors({
+    exposedHeaders: ["Authorization"], // ← this was missing
+  }),
+);
 ```
 
-Without this, `res.headers.get("Authorization")` returned `null` on the client even when the server was setting it correctly. The fix is one line — but finding it meant understanding that CORS isn't just about blocking requests, it's also about controlling what the browser is *allowed to see* in responses.
+Without this, `res.headers.get("Authorization")` returned `null` on the client even when the server was setting it correctly. The fix is one line — but finding it meant understanding that CORS isn't just about blocking requests, it's also about controlling what the browser is _allowed to see_ in responses.
 
 ---
 
@@ -149,7 +157,7 @@ Every failure taught me something about assumptions — code either works in an 
 
 I wanted Kineq to feel like a journal, not a database table. Every design choice was made to reinforce that feeling.
 
-The neobrutalist aesthetic — thick black borders, shadow offsets, monospaced font details — wasn't random. It's the same visual language used by tools people find *satisfying* to open and use. I wanted someone to open Kineq and feel like they were opening a personal notebook, not logging into an enterprise app.
+The neobrutalist aesthetic — thick black borders, shadow offsets, monospaced font details — wasn't random. It's the same visual language used by tools people find _satisfying_ to open and use. I wanted someone to open Kineq and feel like they were opening a personal notebook, not logging into an enterprise app.
 
 The onboarding email isn't just a verification email — it introduces the app with feature cards, a CTA button back to the watchlist, and a tone that feels like a person wrote it. The reminder emails are personalised per-user — they reference your actual shows, not generic content. These details matter because they're the difference between a user feeling like a row in a table and feeling like a person the app knows.
 
@@ -157,7 +165,7 @@ The onboarding email isn't just a verification email — it introduces the app w
 
 ## What I Learned About Myself
 
-I can start projects. I finish them. I care about the details — not just whether the feature works, but whether it *feels right* to use.
+I can start projects. I finish them. I care about the details — not just whether the feature works, but whether it _feels right_ to use.
 
 I also learned that the gap between "it works" and "it's production-ready" is where most of the engineering judgment lives. Rate limits. Cache invalidation. Cookie flags. Environment mismatches. Mobile input edge cases. None of that shows up in tutorials. All of it showed up in Kineq.
 
@@ -176,4 +184,4 @@ Kineq is a full-stack watchlist tracker I built because I needed it, deployed it
 
 ---
 
-*Built solo. Deployed on Vercel + AWS EC2. 10 GitHub stars in the first week. Product Hunt listed.*
+_Built solo. Deployed on Vercel + AWS EC2. 10 GitHub stars in the first week. Product Hunt listed._
