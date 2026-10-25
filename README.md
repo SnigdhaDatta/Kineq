@@ -1,7 +1,7 @@
 <div align="center">
 
 # <img src="https://ph-files.imgix.net/9898312c-0f50-4be6-a0a4-9e2dc8d1cb5e.png?auto=compress,format&amp;codec=mozjpeg&amp;cs=strip&amp;fit=crop&amp;h=80&amp;w=80" width="38" height="38" style="vertical-align: middle; border-radius: 8px; margin-right: 4px;" alt="Kineq Logo"> Kineq
- 
+
 **Your AI-Powered Tracker Cum Organizer**
 
 <img src="https://img.shields.io/badge/version-1.0.0-brightgreen?style=for-the-badge" height="28" style="vertical-align: middle;"> <img src="https://img.shields.io/badge/users-34-red?style=for-the-badge" height="28" style="vertical-align: middle;"> <a href="https://www.producthunt.com/products/kineq?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-kineq" target="_blank" rel="noopener noreferrer"><img alt="Kineq - Your AI-Powered Watchlist Organizer Tracker | Product Hunt" height="28" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1171559&amp;theme=light&amp;t=1782559757484" style="vertical-align: middle;"></a>
@@ -94,6 +94,7 @@ The project is split into:
 
 ## Quick Links
 
+- Product vision and story: [VISION.md](VISION.md)
 - Backend detailed documentation: [Backend README](backend/readme.md)
 
 ## Project Structure
