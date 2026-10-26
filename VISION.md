@@ -1,4 +1,4 @@
-# Kineq — SnigdhaDatta's Product & Engineering Story
+# Kineq — My Product & Engineering Story
 
 > _This is not a project description. This is the story of how I think._
 
